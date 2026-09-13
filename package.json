@@ -1,0 +1,63 @@
+{
+  "name": "design-system-axi",
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.8.0",
+  "description": "Look up components, props, and usage in your design system. An AXI for coding agents.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isamrish/design-system-axi.git"
+  },
+  "keywords": [
+    "axi",
+    "agent",
+    "cli",
+    "toon",
+    "design-system",
+    "storybook",
+    "components"
+  ],
+  "bin": {
+    "design-system-axi": "./dist/bin/design-system-axi.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "test": "pnpm run build && vitest run",
+    "test:watch": "vitest",
+    "dev": "tsx bin/design-system-axi.ts",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "eval": "tsx eval/run.ts",
+    "prepublishOnly": "pnpm run build"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "axi-sdk-js": "0.1.11",
+    "zod": "^4.6.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@toon-format/toon": "^2.1.0",
+    "@types/node": "^22.20.0",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^3.2.7"
+  }
+}

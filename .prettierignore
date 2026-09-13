@@ -1,0 +1,7 @@
+CHANGELOG.md
+dist/
+coverage/
+test/fixtures/
+docs/superpowers/
+.superpowers/
+.claude/
