@@ -91,5 +91,11 @@ jobs:
       - run: pnpm run build
         if: steps.check.outputs.skip != 'true'
 
+      # npm tries OIDC trusted publishing first and falls back to NODE_AUTH_TOKEN
+      # only if the token exchange fails. The NPM_TOKEN fallback exists because
+      # the exchange is rejected for this repository (npm/cli#9969); delete the
+      # secret once OIDC publishing works.
       - run: npm publish --access public --provenance
         if: steps.check.outputs.skip != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
