@@ -1,6 +1,6 @@
-import type { Example, Prop, Status, Subcomponent } from "../catalog/schema.js";
+import type { Example, Prop, Status, Subcomponent } from '../catalog/schema.js';
 
-export type AdapterId = "storybook" | "primer-components-json";
+export type AdapterId = 'storybook' | 'primer-components-json';
 
 export interface FragmentComponent {
   /** Adapter-local id: a Storybook entry id or a Primer component id. */

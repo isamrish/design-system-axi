@@ -1,19 +1,19 @@
-import { AxiError } from "axi-sdk-js";
-import { loadPrimer } from "../adapters/primer/load.js";
-import { isUrl } from "../adapters/read-json.js";
-import { loadStorybook } from "../adapters/storybook/load.js";
-import type { AdapterId, SourceFragment } from "../adapters/types.js";
-import { parseCommandArgs } from "../args.js";
-import { computeAggregates } from "../catalog/aggregates.js";
-import { describeChanges } from "../catalog/diff.js";
-import { mergeFragments } from "../catalog/merge.js";
-import { CATALOG_SCHEMA_VERSION, type Catalog } from "../catalog/schema.js";
-import { readCatalog, writeCatalog } from "../catalog/store.js";
-import { resolveSyncConfig } from "../config/load.js";
-import { BIN, validationError } from "../errors.js";
-import { displayPath } from "../format/text.js";
-import { VERSION } from "../version.js";
-import type { CommandContext } from "./context.js";
+import { AxiError } from 'axi-sdk-js';
+import { loadPrimer } from '../adapters/primer/load.js';
+import { isUrl } from '../adapters/read-json.js';
+import { loadStorybook } from '../adapters/storybook/load.js';
+import type { AdapterId, SourceFragment } from '../adapters/types.js';
+import { parseCommandArgs } from '../args.js';
+import { computeAggregates } from '../catalog/aggregates.js';
+import { describeChanges } from '../catalog/diff.js';
+import { mergeFragments } from '../catalog/merge.js';
+import { CATALOG_SCHEMA_VERSION, type Catalog } from '../catalog/schema.js';
+import { readCatalog, writeCatalog } from '../catalog/store.js';
+import { resolveSyncConfig } from '../config/load.js';
+import { BIN, validationError } from '../errors.js';
+import { displayPath } from '../format/text.js';
+import { VERSION } from '../version.js';
+import type { CommandContext } from './context.js';
 
 export type Loaders = Record<
   AdapterId,
@@ -22,13 +22,13 @@ export type Loaders = Record<
 
 export const defaultLoaders: Loaders = {
   storybook: loadStorybook,
-  "primer-components-json": loadPrimer,
+  'primer-components-json': loadPrimer,
 };
 
 const FLAGS = {
-  storybook: { type: "string" },
-  primer: { type: "string" },
-  catalog: { type: "string" },
+  storybook: { type: 'string' },
+  primer: { type: 'string' },
+  catalog: { type: 'string' },
 } as const;
 
 export async function syncCommand(
@@ -36,9 +36,9 @@ export async function syncCommand(
   ctx: CommandContext,
   loaders: Loaders = defaultLoaders,
 ): Promise<Record<string, unknown>> {
-  const { positionals, flags } = parseCommandArgs("sync", args, FLAGS);
+  const { positionals, flags } = parseCommandArgs('sync', args, FLAGS);
   if (positionals.length > 0)
-    throw validationError(`unexpected argument "${positionals[0]}"`, "sync");
+    throw validationError(`unexpected argument "${positionals[0]}"`, 'sync');
 
   const config = await resolveSyncConfig(ctx, {
     storybook: stringFlag(flags.storybook),
@@ -47,8 +47,8 @@ export async function syncCommand(
   });
   if (config.sources.length === 0) {
     throw validationError(
-      "no sources: pass --storybook <url|dir> and/or --primer <dir>, or add sources to design-system.axi.json",
-      "sync",
+      'no sources: pass --storybook <url|dir> and/or --primer <dir>, or add sources to design-system.axi.json',
+      'sync',
     );
   }
 
@@ -59,10 +59,10 @@ export async function syncCommand(
   const { components, skipped } = mergeFragments(fragments);
   const catalog: Catalog = {
     schemaVersion: CATALOG_SCHEMA_VERSION,
-    generatedBy: { tool: "design-system-axi", version: VERSION },
+    generatedBy: { tool: 'design-system-axi', version: VERSION },
     syncedAt: ctx.now().toISOString(),
     designSystem: resolveIdentity(config.designSystem, fragments),
-    sources: fragments.map((fragment) => ({
+    sources: fragments.map(fragment => ({
       adapter: fragment.adapter,
       location: isUrl(fragment.location)
         ? fragment.location
@@ -79,7 +79,7 @@ export async function syncCommand(
   try {
     previous = await readCatalog(config.catalogPath);
   } catch (error) {
-    if (error instanceof AxiError && error.code === "CATALOG_INVALID") {
+    if (error instanceof AxiError && error.code === 'CATALOG_INVALID') {
       catalogWasUnreadable = true;
     } else {
       throw error;
@@ -96,7 +96,7 @@ export async function syncCommand(
     components: components.length,
     skipped_entries: skipped,
     changes: catalogWasUnreadable
-      ? "replaced unreadable catalog"
+      ? 'replaced unreadable catalog'
       : describeChanges(previous, catalog),
     help: [
       `Run \`${BIN}\` for an overview`,
@@ -108,21 +108,21 @@ export async function syncCommand(
 export function resolveIdentity(
   configured: { name?: string; package?: string; version?: string },
   fragments: SourceFragment[],
-): Catalog["designSystem"] {
+): Catalog['designSystem'] {
   const ordered = [...fragments].sort((a, b) => b.priority - a.priority);
-  const pick = (field: "name" | "package" | "version"): string =>
+  const pick = (field: 'name' | 'package' | 'version'): string =>
     configured[field] ??
     ordered
-      .map((fragment) => fragment.designSystem?.[field])
-      .find((value) => value) ??
-    "unknown";
+      .map(fragment => fragment.designSystem?.[field])
+      .find(value => value) ??
+    'unknown';
   return {
-    name: pick("name"),
-    package: pick("package"),
-    version: pick("version"),
+    name: pick('name'),
+    package: pick('package'),
+    version: pick('version'),
   };
 }
 
 function stringFlag(value: string | boolean | undefined): string | undefined {
-  return typeof value === "string" ? value : undefined;
+  return typeof value === 'string' ? value : undefined;
 }

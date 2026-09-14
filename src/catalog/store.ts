@@ -1,20 +1,20 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { BIN, catalogInvalid, noCatalog } from "../errors.js";
-import { type LocateContext, resolveCatalogPath } from "./locate.js";
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { BIN, catalogInvalid, noCatalog } from '../errors.js';
+import { type LocateContext, resolveCatalogPath } from './locate.js';
 import {
   CATALOG_SCHEMA_VERSION,
   type Catalog,
   CatalogSchema,
-} from "./schema.js";
+} from './schema.js';
 
 export async function readCatalog(path: string): Promise<Catalog | undefined> {
   let text: string;
   try {
-    text = await readFile(path, "utf8");
+    text = await readFile(path, 'utf8');
   } catch (error) {
     const errno = error as NodeJS.ErrnoException;
-    if (errno.code === "ENOENT") return undefined;
+    if (errno.code === 'ENOENT') return undefined;
     throw catalogInvalid(
       `cannot read catalog at ${path} (${errno.code ?? errno.message})`,
       `Run \`${BIN} sync\``,
@@ -27,7 +27,7 @@ export async function readCatalog(path: string): Promise<Catalog | undefined> {
     throw invalid(path);
   }
   const version = (data as { schemaVersion?: unknown } | null)?.schemaVersion;
-  if (typeof version === "number" && version > CATALOG_SCHEMA_VERSION) {
+  if (typeof version === 'number' && version > CATALOG_SCHEMA_VERSION) {
     throw catalogInvalid(
       `catalog schemaVersion ${version} is newer than supported ${CATALOG_SCHEMA_VERSION}`,
       `Run \`${BIN} update\``,
@@ -45,7 +45,7 @@ export async function writeCatalog(
   const valid = CatalogSchema.parse(catalog);
   await mkdir(dirname(path), { recursive: true });
   const temp = `${path}.${process.pid}.tmp`;
-  await writeFile(temp, `${JSON.stringify(valid, null, 2)}\n`, "utf8");
+  await writeFile(temp, `${JSON.stringify(valid, null, 2)}\n`, 'utf8');
   await rename(temp, path);
 }
 

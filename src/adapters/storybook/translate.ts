@@ -1,7 +1,7 @@
-import { z } from "zod";
-import type { Prop } from "../../catalog/schema.js";
-import { parseOrThrow } from "../parse.js";
-import type { FragmentComponent, SourceFragment } from "../types.js";
+import { z } from 'zod';
+import type { Prop } from '../../catalog/schema.js';
+import { parseOrThrow } from '../parse.js';
+import type { FragmentComponent, SourceFragment } from '../types.js';
 
 const Docgen = z.looseObject({
   description: z.string().optional(),
@@ -51,7 +51,7 @@ export function translateStorybook(
   data: unknown,
   location: string,
 ): SourceFragment {
-  const manifest = parseOrThrow(Manifest, data, "storybook");
+  const manifest = parseOrThrow(Manifest, data, 'storybook');
   const components = Object.values(manifest.components).map(
     (entry): FragmentComponent => {
       const deprecation = deprecationNote(entry.jsDocTags);
@@ -61,14 +61,14 @@ export function translateStorybook(
         isComponent:
           /^[A-Z]/.test(entry.name) &&
           importedNames(entry.import).includes(entry.name),
-        storyIds: entry.stories.map((story) => story.id),
-        import: entry.import ?? "",
+        storyIds: entry.stories.map(story => story.id),
+        import: entry.import ?? '',
         description: (
           entry.description ??
           entry.reactDocgen?.description ??
-          ""
+          ''
         ).trim(),
-        ...(deprecation ? { status: "deprecated" as const, deprecation } : {}),
+        ...(deprecation ? { status: 'deprecated' as const, deprecation } : {}),
         props: toProps(
           entry.reactDocgen?.props ?? entry.reactDocgenTypescript?.props,
         ),
@@ -80,16 +80,16 @@ export function translateStorybook(
             ),
           }),
         ),
-        examples: entry.stories.map((story) => ({
+        examples: entry.stories.map(story => ({
           id: story.id,
           name: story.name,
-          snippet: story.snippet ?? "",
+          snippet: story.snippet ?? '',
         })),
       };
     },
   );
   return {
-    adapter: "storybook",
+    adapter: 'storybook',
     location,
     priority: 1,
     distinctEntries: false,
@@ -101,9 +101,9 @@ export function importedNames(statement: string | undefined): string[] {
   const match = statement?.match(/import\s*\{([^}]*)\}/);
   if (!match?.[1]) return [];
   return match[1]
-    .split(",")
-    .map((part) => part.trim().split(/\s+as\s+/)[0] ?? "")
-    .filter((name) => name.length > 0);
+    .split(',')
+    .map(part => part.trim().split(/\s+as\s+/)[0] ?? '')
+    .filter(name => name.length > 0);
 }
 
 function toProps(raw: Record<string, unknown> | undefined): Prop[] {
@@ -114,11 +114,11 @@ function toProps(raw: Record<string, unknown> | undefined): Prop[] {
       const fallback = prop.defaultValue?.value;
       return {
         name,
-        type: type?.raw ?? type?.name ?? "",
+        type: type?.raw ?? type?.name ?? '',
         required: prop.required === true,
         default:
-          fallback === undefined || fallback === null ? "" : String(fallback),
-        description: (prop.description ?? "").trim(),
+          fallback === undefined || fallback === null ? '' : String(fallback),
+        description: (prop.description ?? '').trim(),
         deprecated: false,
       };
     })
@@ -130,5 +130,5 @@ function deprecationNote(
 ): string | undefined {
   const note = tags?.deprecated;
   if (note === undefined) return undefined;
-  return note.join(" ").trim() || "deprecated";
+  return note.join(' ').trim() || 'deprecated';
 }

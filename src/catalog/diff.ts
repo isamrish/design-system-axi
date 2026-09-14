@@ -1,18 +1,18 @@
-import type { Catalog, Component } from "./schema.js";
+import type { Catalog, Component } from './schema.js';
 
 export function describeChanges(
   previous: Catalog | undefined,
   next: Catalog,
 ): string {
-  if (!previous) return "initial sync";
+  if (!previous) return 'initial sync';
   const before = new Map(
-    previous.components.map((component) => [
+    previous.components.map(component => [
       component.id,
       fingerprint(component),
     ]),
   );
   const after = new Map(
-    next.components.map((component) => [component.id, fingerprint(component)]),
+    next.components.map(component => [component.id, fingerprint(component)]),
   );
   let added = 0;
   let removed = 0;
@@ -23,7 +23,7 @@ export function describeChanges(
     else if (old !== print) changed += 1;
   }
   for (const id of before.keys()) if (!after.has(id)) removed += 1;
-  if (added + removed + changed === 0) return "none";
+  if (added + removed + changed === 0) return 'none';
   return `added ${added}, removed ${removed}, changed ${changed}`;
 }
 

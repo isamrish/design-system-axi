@@ -3,11 +3,11 @@ import {
   type Component,
   STATUSES,
   type Status,
-} from "./schema.js";
+} from './schema.js';
 
 export function computeAggregates(components: Component[]): Aggregates {
   const byStatus = Object.fromEntries(
-    STATUSES.map((status) => [status, 0]),
+    STATUSES.map(status => [status, 0]),
   ) as Record<Status, number>;
   let examples = 0;
   let props = 0;

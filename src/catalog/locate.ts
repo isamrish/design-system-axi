@@ -1,8 +1,8 @@
-import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { existsSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
-export const CONFIG_FILE = "design-system.axi.json";
-export const DEFAULT_CATALOG_PATH = join(".design-system-axi", "catalog.json");
+export const CONFIG_FILE = 'design-system.axi.json';
+export const DEFAULT_CATALOG_PATH = join('.design-system-axi', 'catalog.json');
 
 export interface LocateContext {
   cwd: string;

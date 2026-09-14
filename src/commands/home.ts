@@ -1,11 +1,11 @@
-import { resolveCatalogPath } from "../catalog/locate.js";
-import { STATUSES } from "../catalog/schema.js";
-import { readCatalog } from "../catalog/store.js";
-import { formatAge } from "../env/age.js";
-import { readInstalledVersion } from "../env/installed.js";
-import { BIN } from "../errors.js";
-import { displayPath } from "../format/text.js";
-import type { CommandContext } from "./context.js";
+import { resolveCatalogPath } from '../catalog/locate.js';
+import { STATUSES } from '../catalog/schema.js';
+import { readCatalog } from '../catalog/store.js';
+import { formatAge } from '../env/age.js';
+import { readInstalledVersion } from '../env/installed.js';
+import { BIN } from '../errors.js';
+import { displayPath } from '../format/text.js';
+import type { CommandContext } from './context.js';
 
 export async function homeCommand(
   ctx: CommandContext,
@@ -31,14 +31,14 @@ export async function homeCommand(
     },
     catalog: {
       synced: formatAge(catalog.syncedAt, ctx.now()),
-      sources: catalog.sources.map((source) => source.adapter).join(", "),
+      sources: catalog.sources.map(source => source.adapter).join(', '),
     },
   };
 
   const installed = await readInstalledVersion(ctx.cwd, designSystem.package);
   if (installed !== undefined) {
     const matches = installed === designSystem.version;
-    output.installed = `${installed} (${matches ? "matches" : "mismatch"})`;
+    output.installed = `${installed} (${matches ? 'matches' : 'mismatch'})`;
     if (!matches)
       output.warning = `catalog is ${designSystem.version} but the app has ${installed}; run \`${BIN} sync\``;
   }

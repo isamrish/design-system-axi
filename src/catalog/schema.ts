@@ -1,12 +1,12 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const STATUSES = [
-  "stable",
-  "beta",
-  "alpha",
-  "draft",
-  "deprecated",
-  "unknown",
+  'stable',
+  'beta',
+  'alpha',
+  'draft',
+  'deprecated',
+  'unknown',
 ] as const;
 export const StatusSchema = z.enum(STATUSES);
 export type Status = z.infer<typeof StatusSchema>;
@@ -64,7 +64,7 @@ export type Aggregates = z.infer<typeof AggregatesSchema>;
 export const CatalogSchema = z.strictObject({
   schemaVersion: z.literal(CATALOG_SCHEMA_VERSION),
   generatedBy: z.strictObject({
-    tool: z.literal("design-system-axi"),
+    tool: z.literal('design-system-axi'),
     version: z.string(),
   }),
   syncedAt: z.iso.datetime(),

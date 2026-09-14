@@ -1,5 +1,5 @@
 export const DESCRIPTION =
-  "Look up components, props, and usage in your design system";
+  'Look up components, props, and usage in your design system';
 
 export const TOP_LEVEL_HELP = `usage: design-system-axi <command> [args] [flags]
 commands:

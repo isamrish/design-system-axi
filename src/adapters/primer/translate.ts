@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { type Prop, STATUSES, type Status } from "../../catalog/schema.js";
-import { parseOrThrow } from "../parse.js";
-import type { FragmentComponent, SourceFragment } from "../types.js";
+import { z } from 'zod';
+import { type Prop, STATUSES, type Status } from '../../catalog/schema.js';
+import { parseOrThrow } from '../parse.js';
+import type { FragmentComponent, SourceFragment } from '../types.js';
 
 const PrimerProp = z.looseObject({
   name: z.string(),
@@ -46,34 +46,34 @@ export function translatePrimer(
   location: string,
   pkg: { name?: string; version?: string } = {},
 ): SourceFragment {
-  const parsed = parseOrThrow(ComponentsJson, data, "primer-components-json");
+  const parsed = parseOrThrow(ComponentsJson, data, 'primer-components-json');
   const components = Object.values(parsed.components).map(
     (c): FragmentComponent => ({
       key: c.id,
       name: c.name,
       isComponent: true,
-      storyIds: c.stories.map((story) => story.id),
+      storyIds: c.stories.map(story => story.id),
       import: `import { ${c.name} } from "${c.importPath}";`,
       status: toStatus(c.status),
       props: c.props.map(toProp),
-      subcomponents: c.subcomponents.map((sub) => ({
+      subcomponents: c.subcomponents.map(sub => ({
         name: sub.name,
         props: sub.props.map(toProp),
       })),
-      examples: c.stories.map((story) => ({
+      examples: c.stories.map(story => ({
         id: story.id,
-        name: "",
-        snippet: story.code ?? "",
+        name: '',
+        snippet: story.code ?? '',
       })),
     }),
   );
   return {
-    adapter: "primer-components-json",
+    adapter: 'primer-components-json',
     location,
     priority: 2,
     distinctEntries: true,
     designSystem: {
-      name: "Primer React",
+      name: 'Primer React',
       package: pkg.name,
       version: pkg.version,
     },
@@ -84,10 +84,10 @@ export function translatePrimer(
 function toProp(prop: PrimerProp): Prop {
   return {
     name: prop.name,
-    type: prop.type ?? "",
+    type: prop.type ?? '',
     required: prop.required === true,
-    default: prop.defaultValue ?? "",
-    description: (prop.description ?? "").trim(),
+    default: prop.defaultValue ?? '',
+    description: (prop.description ?? '').trim(),
     deprecated: prop.deprecated === true,
   };
 }
@@ -95,5 +95,5 @@ function toProp(prop: PrimerProp): Prop {
 function toStatus(status: string): Status {
   return (STATUSES as readonly string[]).includes(status)
     ? (status as Status)
-    : "unknown";
+    : 'unknown';
 }

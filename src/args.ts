@@ -1,7 +1,7 @@
-import { parseArgs } from "node:util";
-import { validationError } from "./errors.js";
+import { parseArgs } from 'node:util';
+import { validationError } from './errors.js';
 
-export type FlagSpec = Record<string, { type: "string" | "boolean" }>;
+export type FlagSpec = Record<string, { type: 'string' | 'boolean' }>;
 
 export interface ParsedArgs {
   positionals: string[];
@@ -36,7 +36,7 @@ export function intFlag(
   fallback: number,
 ): number {
   if (value === undefined) return fallback;
-  const parsed = typeof value === "string" ? Number(value) : Number.NaN;
+  const parsed = typeof value === 'string' ? Number(value) : Number.NaN;
   if (!Number.isInteger(parsed) || parsed < 1) {
     throw validationError(`--${name} must be a positive integer`, command);
   }
