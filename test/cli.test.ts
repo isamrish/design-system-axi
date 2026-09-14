@@ -22,6 +22,7 @@ describe("cli skeleton", () => {
     expect(result.out).toContain(
       'usage: design-system-axi find "<intent>" [--limit <n>]',
     );
+    expect(result.out).toContain("match: strong when");
   });
 
   it("rejects unknown commands", async () => {
