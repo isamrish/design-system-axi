@@ -4,6 +4,7 @@ import {
   type ContextDeps,
   createContext,
 } from "./commands/context.js";
+import { componentsCommand } from "./commands/components.js";
 import { homeCommand } from "./commands/home.js";
 import { syncCommand } from "./commands/sync.js";
 import { DESCRIPTION, TOP_LEVEL_HELP, getCommandHelp } from "./help.js";
@@ -29,6 +30,7 @@ export async function main(
     resolveContext: () => context,
     home: () => homeCommand(context),
     commands: {
+      components: (args) => componentsCommand(args, context),
       sync: (args) => syncCommand(args, context),
     },
   });
