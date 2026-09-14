@@ -82,6 +82,16 @@ describe("catalog storage", () => {
     });
   });
 
+  it("reports an unreadable catalog path as CATALOG_INVALID", async () => {
+    const dir = tmpDir();
+    const path = join(dir, "catalog.json");
+    mkdirSync(path);
+    await expect(readCatalog(path)).rejects.toMatchObject({
+      code: "CATALOG_INVALID",
+      message: `cannot read catalog at ${path} (EISDIR)`,
+    });
+  });
+
   it("requires a catalog for read commands", async () => {
     const cwd = tmpDir();
     await expect(requireCatalog({ cwd, env: {} })).rejects.toMatchObject({

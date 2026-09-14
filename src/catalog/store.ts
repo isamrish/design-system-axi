@@ -13,8 +13,12 @@ export async function readCatalog(path: string): Promise<Catalog | undefined> {
   try {
     text = await readFile(path, "utf8");
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
-    throw error;
+    const errno = error as NodeJS.ErrnoException;
+    if (errno.code === "ENOENT") return undefined;
+    throw catalogInvalid(
+      `cannot read catalog at ${path} (${errno.code ?? errno.message})`,
+      `Run \`${BIN} sync\``,
+    );
   }
   let data: unknown;
   try {
