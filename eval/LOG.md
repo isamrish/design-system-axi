@@ -30,3 +30,18 @@ Why it generalizes: "pick" is ordinary UI vocabulary for choosing from a set of 
 Before → after retrieval (on top of attempt 1): 15/20 (75%) → 15/20 (75%). No task flipped by itself at the existing `SYNONYM_WEIGHT`, because a synonym-weighted match still couldn't outscore literal, full-weight name matches on unrelated `*List` components. All tests pass; no regressions.
 
 Kept: retrieval did not drop, and it supplies the signal a later attempt needed for t11/t17.
+
+## 2026-09-13 — Tuning attempt 3: raise SYNONYM_WEIGHT from 0.4 to 0.6
+
+Change: `SYNONYM_WEIGHT` in `src/search/rank.ts`, `0.4` → `0.6`.
+
+Why it generalizes: this is a global ranking constant, not a task-specific rule. A synonym match is real evidence of intent (an agent that says "pick" or "sidebar navigation" is describing the same UI need as "select" or "nav"), and 0.4x was discounting that evidence more than its reliability warrants relative to literal keyword collisions in incidental fields (a `prop` or `story` name that happens to contain the literal query word). Raising it to 0.6 still keeps every synonym match below a same-field literal match (0.6 < 1), preserving the "exact word beats implied word" ordering the scorer is built on; it only changes how synonym matches compare against _literal matches in weaker fields_, which is the right lever to fix component name matches (weight 4) via synonym losing to unrelated prop/story matches (weight 1–1.5) via literal words.
+
+Before → after retrieval (on top of attempts 1+2): 15/20 (75%) → 19/20 (95%). Fixed: t11 (pick several labels from a searchable list → SelectPanel now top3), t12 (empty state when a search has no results → Blankslate now top3), t13 (paginate through a long list of results → Pagination now top3), t17 (multi-line comment input → Textarea now top1). Remaining miss: t05 (sidebar navigation links for settings pages → NavList) — `PageHeader`'s literal "Navigation" subcomponent and three `Page*`/`SplitPageLayout` name matches on the generic word "page" still outscore NavList's synonym-only path from "sidebar"/"navigation" to "nav"; fixing this would require devaluing the literal `name`/`subcomponent` fields generally, which risks the majority of currently-passing tasks that depend on strong literal name matches, so it was not attempted.
+
+No regressions: `pnpm vitest run` (110/110 passing, including the exact scores hard-coded in `test/search/rank.test.ts`, which held without modification) and `pnpm eval` confirm all 19 hits and the eval regression suite (`test/eval-tasks.test.ts`) still pass.
+
+Target reached: 19/20 (95%) ≥ 85%. Stopping the tuning loop here (3 logged attempts, target met).
+
+Final configuration: `STOPWORDS` includes `before, does, has, no, several, through`; synonym groups include `pick` (select group) and `textarea` (input group); `SYNONYM_WEIGHT = 0.6`.
+Final numbers: retrieval_top3: 19/20 (95%) · avg_tokens_per_task: 351 · raw_manifest_tokens: 608464 · remaining miss: t05.

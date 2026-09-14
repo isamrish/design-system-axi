@@ -19,7 +19,7 @@ export const FIELD_WEIGHTS: Record<FieldName, number> = {
   prop: 1.5,
   story: 1,
 };
-export const SYNONYM_WEIGHT = 0.4;
+export const SYNONYM_WEIGHT = 0.6;
 export const DEPRECATED_FACTOR = 0.3;
 const WHY_TEXT_LIMIT = 40;
 
