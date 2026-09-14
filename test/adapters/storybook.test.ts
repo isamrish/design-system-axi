@@ -217,6 +217,19 @@ describe("loadStorybook", () => {
     );
   });
 
+  it("suggests a Storybook fix when the manifest cannot be read", async () => {
+    await expect(
+      loadStorybook(
+        fileURLToPath(new URL("../fixtures/primer/package", import.meta.url)),
+      ),
+    ).rejects.toMatchObject({
+      code: "SOURCE_UNREACHABLE",
+      suggestions: [
+        "Point --storybook at a Storybook >= 10 URL or build directory with features.componentsManifest enabled",
+      ],
+    });
+  });
+
   it("translates the real Primer manifest", async () => {
     const fragment = await loadStorybook(fixtureDir);
     expect(fragment.components).toHaveLength(210);
