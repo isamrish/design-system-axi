@@ -113,3 +113,16 @@ Both changes were designed after reading registration 2's baseline misses, so fr
    Result (on top of 1): registration 1 18/20 (90%); registration 2 9/20 (45%). `Timeline` no longer appears in unrelated top-3 lists (it was in 11 of 20), r2-13 ActionBar recovered, r2-04 Timeline (its own golden) dropped out.
 
 Kept both: registration 1 improved, registration 2 did not regress beyond one task, and both remove known noise sources. Remaining registration 2 misses are vocabulary gaps (hyperlink → Link, glyph → Octicon, section title → Heading, suggestions while typing → Autocomplete, hide on narrow screens → Hidden, dropdown → Select), not ranking noise.
+
+## 2026-09-14 — Mark weak matches in find
+
+`find` rows now carry `match: strong|weak` instead of the relative `score` (which showed `1` for every top result, right or wrong). A match is `strong` when a query word — not a synonym — appears in the component's name, a subcomponent name, or its description; otherwise `weak`. When every match is weak, `find` adds `result: no strong match for "<intent>"; these components only partly match` and points to `components`. Ranking is unchanged: retrieval stays registration 1 18/20 (90%), registration 2 9/20 (45%). `eval/run.ts` reports the top match's strength per task.
+
+How the label lines up with correctness (top match strength vs. golden in top 3):
+
+|                | hit, strong | hit, weak | miss, strong | miss, weak |
+| -------------- | ----------- | --------- | ------------ | ---------- |
+| Registration 1 | 13          | 5         | 2            | 0          |
+| Registration 2 | 8           | 1         | 8            | 3          |
+
+`weak` is a reliable warning (3 of 4 weak top matches in registration 2 were misses) but it does not catch most wrong answers: 8 registration-2 misses are still `strong` because an incidental direct word (e.g. "more" in a description) counts as a strong match.

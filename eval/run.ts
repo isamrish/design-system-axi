@@ -55,9 +55,8 @@ try {
     const rows: Record<string, unknown>[] = [];
     for (const task of registration.tasks) {
       const found = await findCommand([task.intent, "--limit", "3"], ctx);
-      const top3 = (found.matches as { component: string }[]).map(
-        (match) => match.component,
-      );
+      const matches = found.matches as { component: string; match: string }[];
+      const top3 = matches.map((match) => match.component);
       const hit = task.golden.some((name) => top3.includes(name));
       if (hit) hits += 1;
       let taskTokens = estimateTokens(encode(found));
@@ -70,6 +69,7 @@ try {
         id: task.id,
         hit: hit ? "yes" : "no",
         top3: top3.join(" | "),
+        top_match: matches[0]?.match ?? "none",
         golden: task.golden.join(" | "),
         tokens: taskTokens,
       });

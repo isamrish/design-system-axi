@@ -4,6 +4,7 @@ import { runCli } from "../helpers/cli.js";
 import {
   makeCatalog,
   makeComponent,
+  makeProp,
   writeProjectCatalog,
 } from "../helpers/catalog.js";
 import { tmpDir } from "../helpers/tmp.js";
@@ -33,7 +34,7 @@ describe("findCommand", () => {
         {
           component: "ConfirmationDialog",
           status: "alpha",
-          score: 1,
+          match: "strong",
           why: 'name "ConfirmationDialog" matches "dialog"',
         },
       ],
@@ -51,6 +52,43 @@ describe("findCommand", () => {
     expect((await findCommand(["dialog"], ctx)).help).toEqual([
       "Run `design-system-axi component dialog_v2 --id` for props, import, and an example",
     ]);
+  });
+
+  it("says so when only weak matches exist", async () => {
+    const ctx = await project([
+      makeComponent({
+        id: "relativetime",
+        name: "RelativeTime",
+        props: [makeProp({ name: "date", type: "Date" })],
+      }),
+    ]);
+    expect(await findCommand(["date", "range", "picker"], ctx)).toEqual({
+      intent: "date range picker",
+      matches: [
+        {
+          component: "RelativeTime",
+          status: "alpha",
+          match: "weak",
+          why: 'prop "date" matches "date"',
+        },
+      ],
+      result:
+        'no strong match for "date range picker"; these components only partly match',
+      help: [
+        "Run `design-system-axi component RelativeTime` to check whether it fits",
+        "Run `design-system-axi components` to browse all components",
+      ],
+    });
+  });
+
+  it("caps matches at --limit", async () => {
+    const ctx = await project([
+      makeComponent({ id: "button", name: "Button" }),
+      makeComponent({ id: "buttongroup", name: "ButtonGroup" }),
+      makeComponent({ id: "iconbutton", name: "IconButton" }),
+    ]);
+    const output = await findCommand(["button", "--limit", "2"], ctx);
+    expect(output.matches).toHaveLength(2);
   });
 
   it("reports no matches definitively", async () => {
@@ -78,6 +116,6 @@ describe("findCommand", () => {
 
   it("renders a TOON table through the CLI", async () => {
     const result = await runCli(["find", "spinner"], await project());
-    expect(result.out).toContain("matches[1]{component,status,score,why}:");
+    expect(result.out).toContain("matches[1]{component,status,match,why}:");
   });
 });

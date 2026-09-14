@@ -42,6 +42,12 @@ const LENGTH_NORMALIZED: ReadonlySet<FieldName> = new Set([
 ]);
 /** BM25-style length normalization strength (0 = off, 1 = fully proportional). */
 const LENGTH_NORMALIZATION = 0.75;
+/** Fields that describe what a component is; a direct word match here is a strong match. */
+const IDENTITY_FIELDS: ReadonlySet<FieldName> = new Set([
+  "name",
+  "subcomponent",
+  "description",
+]);
 export const DEPRECATED_FACTOR = 0.3;
 const WHY_TEXT_LIMIT = 40;
 
@@ -65,6 +71,8 @@ export interface SearchIndex {
 export interface Match {
   component: Component;
   score: number;
+  /** strong: a query word (not a synonym) appears in the name, a subcomponent name, or the description. */
+  strength: "strong" | "weak";
   why: string;
 }
 
@@ -119,6 +127,7 @@ export function search(
     const used = new Set<string>();
     let score = 0;
     let strongest: Evidence | undefined;
+    let identityMatch = false;
     for (const original of originals) {
       const candidates = [
         { term: original, weight: 1, via: undefined as string | undefined },
@@ -148,6 +157,7 @@ export function search(
       if (!best) continue;
       used.add(best.term);
       score += best.value;
+      if (!best.via && IDENTITY_FIELDS.has(best.field)) identityMatch = true;
       if (!strongest || best.value > strongest.value) strongest = best;
     }
     if (!strongest) continue;
@@ -155,6 +165,7 @@ export function search(
     matches.push({
       component: entry.component,
       score,
+      strength: identityMatch ? "strong" : "weak",
       why: explain(strongest),
     });
   }

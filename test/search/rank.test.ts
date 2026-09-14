@@ -95,6 +95,24 @@ describe("search", () => {
     expect(ranked[1]?.score).toBeLessThan(1);
   });
 
+  it("marks direct matches in name, subcomponent, or description as strong", () => {
+    const strength = (query: string) =>
+      search(index, query, 5).map((match) => [
+        match.component.id,
+        match.strength,
+      ]);
+    expect(strength("dialog")).toEqual([
+      ["confirmationdialog", "strong"],
+      ["dialog_v2", "strong"],
+      ["dialog", "strong"],
+    ]);
+    expect(strength("delete")).toEqual([
+      ["confirmationdialog", "weak"],
+      ["button", "weak"],
+    ]);
+    expect(strength("unread")).toEqual([["counterlabel", "weak"]]);
+  });
+
   it("respects the limit", () => {
     expect(rows("dialog", 1)).toHaveLength(1);
   });
