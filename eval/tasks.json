@@ -1,0 +1,103 @@
+{
+  "registration": 1,
+  "registered": "2026-09-13",
+  "designSystem": "@primer/react@38.39.0",
+  "tasks": [
+    {
+      "id": "t01",
+      "intent": "confirm before deleting a repository",
+      "golden": ["ConfirmationDialog"]
+    },
+    {
+      "id": "t02",
+      "intent": "primary call to action button",
+      "golden": ["Button"]
+    },
+    {
+      "id": "t03",
+      "intent": "show a loading spinner while data is fetched",
+      "golden": ["Spinner"]
+    },
+    {
+      "id": "t04",
+      "intent": "dropdown menu of actions opened from a kebab button",
+      "golden": ["ActionMenu"]
+    },
+    {
+      "id": "t05",
+      "intent": "sidebar navigation links for settings pages",
+      "golden": ["NavList"]
+    },
+    {
+      "id": "t06",
+      "intent": "tabs to switch between sections of a page",
+      "golden": ["UnderlineNav", "UnderlinePanels", "Tabs"]
+    },
+    {
+      "id": "t07",
+      "intent": "text field for entering an email address with a label",
+      "golden": ["TextInput", "FormControl"]
+    },
+    {
+      "id": "t08",
+      "intent": "on off toggle for a setting",
+      "golden": ["ToggleSwitch"]
+    },
+    {
+      "id": "t09",
+      "intent": "message banner announcing an error at the top of the page",
+      "golden": ["Banner", "Flash"]
+    },
+    {
+      "id": "t10",
+      "intent": "tooltip explaining what an icon button does",
+      "golden": ["Tooltip", "IconButton"]
+    },
+    {
+      "id": "t11",
+      "intent": "pick several labels from a searchable list",
+      "golden": ["SelectPanel"]
+    },
+    {
+      "id": "t12",
+      "intent": "empty state when a search has no results",
+      "golden": ["Blankslate"]
+    },
+    {
+      "id": "t13",
+      "intent": "paginate through a long list of results",
+      "golden": ["Pagination"]
+    },
+    { "id": "t14", "intent": "user profile picture", "golden": ["Avatar"] },
+    {
+      "id": "t15",
+      "intent": "breadcrumb trail showing where the page sits in the hierarchy",
+      "golden": ["Breadcrumbs"]
+    },
+    {
+      "id": "t16",
+      "intent": "table of rows with sortable columns",
+      "golden": ["DataTable"]
+    },
+    {
+      "id": "t17",
+      "intent": "multi-line comment input",
+      "golden": ["Textarea"]
+    },
+    {
+      "id": "t18",
+      "intent": "show whether a pull request is open, closed, or merged",
+      "golden": ["StateLabel"]
+    },
+    {
+      "id": "t19",
+      "intent": "file tree explorer with nested folders",
+      "golden": ["TreeView"]
+    },
+    {
+      "id": "t20",
+      "intent": "page title with actions at the top of the page",
+      "golden": ["PageHeader"]
+    }
+  ]
+}
