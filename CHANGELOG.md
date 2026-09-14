@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.2...design-system-axi-v0.1.3) (2026-09-14)
+
+
+### Bug Fixes
+
+* find the catalog from subdirectories and note missing inherited props ([#7](https://github.com/isamrish/design-system-axi/issues/7)) ([6b32a50](https://github.com/isamrish/design-system-axi/commit/6b32a50b52937fb40f37d1d5b26a703d8da7d6bf))
+
 ## [0.1.2](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.1...design-system-axi-v0.1.2) (2026-09-14)
 
 
