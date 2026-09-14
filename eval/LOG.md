@@ -102,3 +102,14 @@ Before → after retrieval: `pnpm run eval` gave 17/20 (85%) both before and aft
 - Registration 2 (held-out): **10/20 (50%)** · avg_tokens_per_task 388 · misses r2-05 Autocomplete, r2-08 Popover, r2-09 Dialog, r2-10 CheckboxGroup/Checkbox, r2-11 Hidden, r2-14 Truncate, r2-16 Octicon, r2-17 Select, r2-19 Heading, r2-20 Link.
 
 Observation: `Timeline` appears in 11 of 20 registration-2 top-3 lists. Its Storybook description is a long internal engineering note, so incidental words match it at description weight.
+
+## 2026-09-14 — Search prop descriptions, then length-normalize free text
+
+Both changes were designed after reading registration 2's baseline misses, so from here registration 2 is **no longer held-out**; a fresh registration 3 will be the clean measurement.
+
+1. Index non-deprecated prop descriptions as a `propDescription` field (weight 1.25, between prop names and story names; evidence labelled `prop description`). Primer ships 481 described props that were not searchable.
+   Result: registration 1 17 → 18/20 (90%); registration 2 10 → 9/20 (45%) — r2-13 ActionBar dropped out behind free-text matches.
+2. BM25-style length normalization (b = 0.75) for the free-text fields (`description`, `propDescription`): a word in a long paragraph counts less than the same word in a short one.
+   Result (on top of 1): registration 1 18/20 (90%); registration 2 9/20 (45%). `Timeline` no longer appears in unrelated top-3 lists (it was in 11 of 20), r2-13 ActionBar recovered, r2-04 Timeline (its own golden) dropped out.
+
+Kept both: registration 1 improved, registration 2 did not regress beyond one task, and both remove known noise sources. Remaining registration 2 misses are vocabulary gaps (hyperlink → Link, glyph → Octicon, section title → Heading, suggestions while typing → Autocomplete, hide on narrow screens → Hidden, dropdown → Select), not ranking noise.

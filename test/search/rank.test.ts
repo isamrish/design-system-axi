@@ -22,6 +22,18 @@ const components = [
   makeComponent({ id: "dialog", name: "Dialog", status: "deprecated" }),
   makeComponent({ id: "dialog_v2", name: "Dialog" }),
   makeComponent({ id: "spinner", name: "Spinner" }),
+  makeComponent({
+    id: "counterlabel",
+    name: "CounterLabel",
+    props: [
+      makeProp({
+        name: "scheme",
+        type: "'primary' | 'secondary'",
+        description:
+          "Pass in 'primary' for a darker background when the count is unread.",
+      }),
+    ],
+  }),
 ];
 const index = buildIndex(components);
 const rows = (query: string, limit = 5) =>
@@ -49,6 +61,38 @@ describe("search", () => {
       ],
       ["button", 0.75, 'prop "danger" matches "delete" (synonym "danger")'],
     ]);
+  });
+
+  it("matches words in prop descriptions and labels the evidence", () => {
+    expect(rows("unread")).toEqual([
+      [
+        "counterlabel",
+        1,
+        'prop description "Pass in \'primary\' for a darker backgrou…" matches "unread"',
+      ],
+    ]);
+  });
+
+  it("weights a word in a long description below the same word in a short one", () => {
+    const texts = buildIndex([
+      makeComponent({
+        id: "timeline",
+        name: "Timeline",
+        description:
+          "Internal notes: these story examples cover issue events, repository activity, review requests, code scanning alerts, license changes, and the migration plan for the next phase.",
+      }),
+      makeComponent({
+        id: "banner",
+        name: "Banner",
+        description: "Announces a migration.",
+      }),
+    ]);
+    const ranked = search(texts, "migration", 5);
+    expect(ranked.map((match) => match.component.id)).toEqual([
+      "banner",
+      "timeline",
+    ]);
+    expect(ranked[1]?.score).toBeLessThan(1);
   });
 
   it("respects the limit", () => {
