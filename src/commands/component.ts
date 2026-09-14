@@ -89,6 +89,12 @@ function describeComponent(
     output.description = full
       ? description
       : truncate(description, DESCRIPTION_LIMIT);
+    if (!full && description.length > DESCRIPTION_LIMIT) {
+      output.description_shown = shownHint(
+        DESCRIPTION_LIMIT,
+        description.length,
+      );
+    }
   }
   if (component.deprecation) output.deprecated = oneLine(component.deprecation);
   Object.assign(output, propsSection(component.props, full));
@@ -100,6 +106,9 @@ function describeComponent(
   } else {
     const example = component.examples.find(candidate => candidate.snippet);
     output.example = example ? truncate(example.snippet, EXAMPLE_LIMIT) : '';
+    if (example && example.snippet.length > EXAMPLE_LIMIT) {
+      output.example_shown = shownHint(EXAMPLE_LIMIT, example.snippet.length);
+    }
     output.examples_total = component.examples.length;
   }
   output.subcomponents = component.subcomponents.map(sub => sub.name);
@@ -151,6 +160,11 @@ function describeSubcomponent(
   };
 }
 
+/** `truncate` keeps limit - 1 characters and adds an ellipsis. */
+function shownHint(limit: number, length: number): string {
+  return `${limit - 1} of ${length} chars (use --full)`;
+}
+
 function propsSection(props: Prop[], full: boolean): Output {
   if (full) {
     return {
@@ -175,6 +189,12 @@ function propsSection(props: Prop[], full: boolean): Output {
   };
   if (visible.length > PROP_LIMIT)
     section.props_shown = `${PROP_LIMIT} of ${visible.length}`;
+  const cutTypes = visible
+    .slice(0, PROP_LIMIT)
+    .filter(prop => oneLine(prop.type).length > TYPE_LIMIT).length;
+  if (cutTypes > 0) {
+    section.types_shown = `${cutTypes} prop ${cutTypes === 1 ? 'type' : 'types'} cut to ${TYPE_LIMIT - 1} chars (use --full)`;
+  }
   section.props_note = PROPS_NOTE;
   return section;
 }

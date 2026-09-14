@@ -49,7 +49,7 @@ const IDENTITY_FIELDS: ReadonlySet<FieldName> = new Set([
   'description',
 ]);
 export const DEPRECATED_FACTOR = 0.3;
-const WHY_TEXT_LIMIT = 40;
+export const WHY_TEXT_LIMIT = 40;
 
 interface FieldItem {
   text: string;
@@ -74,6 +74,8 @@ export interface Match {
   /** strong: a query word (not a synonym) appears in the name, a subcomponent name, or the description. */
   strength: 'strong' | 'weak';
   why: string;
+  /** True when the evidence text in `why` was shortened to WHY_TEXT_LIMIT characters. */
+  whyShortened: boolean;
 }
 
 interface Evidence {
@@ -167,6 +169,7 @@ export function search(
       score,
       strength: identityMatch ? 'strong' : 'weak',
       why: explain(strongest),
+      whyShortened: normalizeSpace(strongest.text).length > WHY_TEXT_LIMIT,
     });
   }
 
@@ -228,8 +231,12 @@ function lengthFactor(
   );
 }
 
+function normalizeSpace(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 function explain(evidence: Evidence): string {
-  const text = evidence.text.replace(/\s+/g, ' ').trim();
+  const text = normalizeSpace(evidence.text);
   const shown =
     text.length > WHY_TEXT_LIMIT
       ? `${text.slice(0, WHY_TEXT_LIMIT - 1)}…`
