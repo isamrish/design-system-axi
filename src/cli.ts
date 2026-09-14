@@ -4,6 +4,7 @@ import {
   type ContextDeps,
   createContext,
 } from "./commands/context.js";
+import { syncCommand } from "./commands/sync.js";
 import { DESCRIPTION, TOP_LEVEL_HELP, getCommandHelp } from "./help.js";
 import { VERSION } from "./version.js";
 
@@ -26,6 +27,8 @@ export async function main(
     stdout,
     resolveContext: () => context,
     home: () => ({ help: ["Run `design-system-axi --help`"] }),
-    commands: {},
+    commands: {
+      sync: (args) => syncCommand(args, context),
+    },
   });
 }
