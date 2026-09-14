@@ -33,6 +33,30 @@ describe("catalog location", () => {
     );
   });
 
+  it("finds the nearest existing catalog from a subdirectory", () => {
+    const root = tmpDir();
+    mkdirSync(join(root, ".design-system-axi"), { recursive: true });
+    writeFileSync(join(root, ".design-system-axi", "catalog.json"), "{}");
+    const nested = join(root, "node_modules", "@primer", "react");
+    mkdirSync(nested, { recursive: true });
+    expect(resolveCatalogPath({ cwd: nested, env: {} })).toBe(
+      join(root, ".design-system-axi", "catalog.json"),
+    );
+  });
+
+  it("uses whichever project marker is nearest", () => {
+    const root = tmpDir();
+    writeFileSync(join(root, "design-system.axi.json"), "{}");
+    const app = join(root, "apps", "web");
+    mkdirSync(join(app, ".design-system-axi"), { recursive: true });
+    writeFileSync(join(app, ".design-system-axi", "catalog.json"), "{}");
+    const deeper = join(app, "src");
+    mkdirSync(deeper, { recursive: true });
+    expect(resolveCatalogPath({ cwd: deeper, env: {} })).toBe(
+      join(app, ".design-system-axi", "catalog.json"),
+    );
+  });
+
   it("prefers the flag, then the environment variable", () => {
     const cwd = tmpDir();
     const env = { DESIGN_SYSTEM_AXI_CATALOG: "env/catalog.json" };

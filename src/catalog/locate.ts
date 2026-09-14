@@ -20,10 +20,28 @@ export function findConfigFile(cwd: string): string | undefined {
   }
 }
 
+/**
+ * The nearest directory at or above `cwd` that holds a catalog or a config file,
+ * so commands work from any subdirectory of a project (like git).
+ */
+export function findProjectRoot(cwd: string): string | undefined {
+  let dir = resolve(cwd);
+  for (;;) {
+    if (
+      existsSync(join(dir, DEFAULT_CATALOG_PATH)) ||
+      existsSync(join(dir, CONFIG_FILE))
+    ) {
+      return dir;
+    }
+    const parent = dirname(dir);
+    if (parent === dir) return undefined;
+    dir = parent;
+  }
+}
+
 export function resolveCatalogPath(ctx: LocateContext, flag?: string): string {
   if (flag) return resolve(ctx.cwd, flag);
   const fromEnv = ctx.env.DESIGN_SYSTEM_AXI_CATALOG;
   if (fromEnv) return resolve(ctx.cwd, fromEnv);
-  const config = findConfigFile(ctx.cwd);
-  return resolve(config ? dirname(config) : ctx.cwd, DEFAULT_CATALOG_PATH);
+  return resolve(findProjectRoot(ctx.cwd) ?? ctx.cwd, DEFAULT_CATALOG_PATH);
 }

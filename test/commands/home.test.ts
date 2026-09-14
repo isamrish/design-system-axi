@@ -61,6 +61,19 @@ describe("homeCommand", () => {
     );
   });
 
+  it("works from a subdirectory of the project", async () => {
+    const cwd = tmpDir();
+    await writeProjectCatalog(cwd, catalog);
+    const nested = join(cwd, "src", "components");
+    mkdirSync(nested, { recursive: true });
+    const output = await homeCommand({ cwd: nested, env: {}, now });
+    expect(output.design_system).toEqual({
+      name: "Acme UI",
+      package: "@acme/ui",
+      version: "3.4.1",
+    });
+  });
+
   it("shows a definitive empty state without a catalog", async () => {
     const cwd = tmpDir();
     expect(await homeCommand({ cwd, env: {}, now })).toEqual({
