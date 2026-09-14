@@ -6,6 +6,7 @@ import {
 } from "./commands/context.js";
 import { componentCommand } from "./commands/component.js";
 import { componentsCommand } from "./commands/components.js";
+import { findCommand } from "./commands/find.js";
 import { homeCommand } from "./commands/home.js";
 import { syncCommand } from "./commands/sync.js";
 import { DESCRIPTION, TOP_LEVEL_HELP, getCommandHelp } from "./help.js";
@@ -33,6 +34,7 @@ export async function main(
     commands: {
       component: (args) => componentCommand(args, context),
       components: (args) => componentsCommand(args, context),
+      find: (args) => findCommand(args, context),
       sync: (args) => syncCommand(args, context),
     },
   });
