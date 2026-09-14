@@ -30,7 +30,14 @@ async function fetchText(url: string): Promise<string> {
     );
   }
   if (!response.ok) throw sourceUnreachable(url, `HTTP ${response.status}`);
-  return response.text();
+  try {
+    return await response.text();
+  } catch (error) {
+    throw sourceUnreachable(
+      url,
+      error instanceof Error ? error.message : String(error),
+    );
+  }
 }
 
 async function readText(path: string): Promise<string> {

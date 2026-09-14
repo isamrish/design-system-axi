@@ -45,6 +45,12 @@ describe("readJson from URLs", () => {
         return res
           .writeHead(200, { "content-type": "text/html" })
           .end("<!doctype html>");
+      if (req.url === "/partial") {
+        res.writeHead(200, { "content-length": "1000" });
+        res.write('{"v":');
+        setTimeout(() => res.socket?.destroy(), 20);
+        return;
+      }
       res.writeHead(404).end("missing");
     });
     await new Promise<void>((resolve) =>
@@ -77,6 +83,12 @@ describe("readJson from URLs", () => {
     await expect(readJson(`${base}/html`)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
       message: `cannot read ${base}/html (not JSON)`,
+    });
+  });
+
+  it("reports a body read failure as SOURCE_UNREACHABLE", async () => {
+    await expect(readJson(`${base}/partial`)).rejects.toMatchObject({
+      code: "SOURCE_UNREACHABLE",
     });
   });
 });
