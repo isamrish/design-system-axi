@@ -1,6 +1,6 @@
-import type { z } from "zod";
-import { manifestShape } from "../errors.js";
-import type { AdapterId } from "./types.js";
+import type { z } from 'zod';
+import { manifestShape } from '../errors.js';
+import type { AdapterId } from './types.js';
 
 export function parseOrThrow<T>(
   schema: z.ZodType<T>,
@@ -12,7 +12,7 @@ export function parseOrThrow<T>(
   const issue = result.error.issues[0];
   const path =
     issue && issue.path.length > 0
-      ? issue.path.map(String).join(".")
-      : "<root>";
-  throw manifestShape(adapter, path, issue?.message ?? "invalid data");
+      ? issue.path.map(String).join('.')
+      : '<root>';
+  throw manifestShape(adapter, path, issue?.message ?? 'invalid data');
 }

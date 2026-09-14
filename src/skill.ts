@@ -2,27 +2,27 @@
 // Kept terse and outcome-focused so it fires on "which component / how do I use it" intents.
 export const SKILL_DESCRIPTION =
   "Look up the app's design system via the design-system-axi CLI - which components exist, their status, " +
-  "import path, props, and known-good examples, plus components ranked with evidence for what you are building, " +
-  "read from a local catalog synced from Storybook and design-system metadata. Use before writing or changing UI, " +
+  'import path, props, and known-good examples, plus components ranked with evidence for what you are building, ' +
+  'read from a local catalog synced from Storybook and design-system metadata. Use before writing or changing UI, ' +
   "when choosing which component to use, or when checking a component's props, import, or deprecation.";
 
-export const SKILL_AUTHOR = "Amrish Kushwaha (isamrish)";
+export const SKILL_AUTHOR = 'Amrish Kushwaha (isamrish)';
 
 // Extended frontmatter read by Nous Research's Hermes Agent harness
 // (https://hermes-agent.nousresearch.com/docs/user-guide/features/skills).
 // Harnesses that don't know these fields (e.g. Claude Code) ignore them.
 export const HERMES_TAGS = [
-  "design-system",
-  "components",
-  "storybook",
-  "ui",
-  "react",
-  "cli",
+  'design-system',
+  'components',
+  'storybook',
+  'ui',
+  'react',
+  'cli',
 ];
-export const HERMES_CATEGORY = "development";
+export const HERMES_CATEGORY = 'development';
 
 function yamlStringList(values: string[], indent: string): string {
-  return values.map((value) => `${indent}- ${value}`).join("\n");
+  return values.map(value => `${indent}- ${value}`).join('\n');
 }
 
 /**
@@ -38,7 +38,7 @@ author: ${SKILL_AUTHOR}
 metadata:
   hermes:
     tags:
-${yamlStringList(HERMES_TAGS, "      ")}
+${yamlStringList(HERMES_TAGS, '      ')}
     category: ${HERMES_CATEGORY}
 ---
 

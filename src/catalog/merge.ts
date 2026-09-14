@@ -2,8 +2,8 @@ import type {
   AdapterId,
   FragmentComponent,
   SourceFragment,
-} from "../adapters/types.js";
-import type { Component, Example, Status } from "./schema.js";
+} from '../adapters/types.js';
+import type { Component, Example, Status } from './schema.js';
 
 interface Member {
   adapter: AdapterId;
@@ -45,7 +45,7 @@ export function mergeFragments(fragments: SourceFragment[]): MergeResult {
     const eligible = (group: Group) =>
       !(
         fragment.distinctEntries &&
-        group.members.some((member) => member.adapter === fragment.adapter)
+        group.members.some(member => member.adapter === fragment.adapter)
       );
     const placed = new Map<string, Group>();
     const pending: FragmentComponent[] = [];
@@ -129,22 +129,22 @@ function prefixMatch(
 }
 
 function nameMatch(name: string, groups: Group[]): Group | undefined {
-  const same = groups.filter((group) => group.members[0]?.entry.name === name);
+  const same = groups.filter(group => group.members[0]?.entry.name === name);
   if (same.length === 1) return same[0];
   const current = same.filter(
-    (group) =>
-      group.members.find((m) => m.entry.status)?.entry.status !== "deprecated",
+    group =>
+      group.members.find(m => m.entry.status)?.entry.status !== 'deprecated',
   );
   return current.length === 1 ? current[0] : undefined;
 }
 
 function toComponent(group: Group): Component {
   const head = group.members[0];
-  if (!head) throw new Error("empty merge group");
+  if (!head) throw new Error('empty merge group');
   const provenance: Record<string, string> = {};
 
   const scalar = (
-    field: "import" | "status" | "description" | "deprecation",
+    field: 'import' | 'status' | 'description' | 'deprecation',
   ): string => {
     for (const member of group.members) {
       const value = member.entry[field];
@@ -153,11 +153,11 @@ function toComponent(group: Group): Component {
         return value;
       }
     }
-    return "";
+    return '';
   };
 
   const list = <T>(
-    field: "props" | "subcomponents",
+    field: 'props' | 'subcomponents',
     read: (entry: FragmentComponent) => T[] | undefined,
   ): T[] => {
     for (const member of group.members) {
@@ -173,12 +173,12 @@ function toComponent(group: Group): Component {
   return {
     id: head.entry.key,
     name: head.entry.name,
-    import: scalar("import"),
-    status: (scalar("status") || "unknown") as Status,
-    description: scalar("description"),
-    deprecation: scalar("deprecation"),
-    props: list("props", (entry) => entry.props),
-    subcomponents: list("subcomponents", (entry) => entry.subcomponents),
+    import: scalar('import'),
+    status: (scalar('status') || 'unknown') as Status,
+    description: scalar('description'),
+    deprecation: scalar('deprecation'),
+    props: list('props', entry => entry.props),
+    subcomponents: list('subcomponents', entry => entry.subcomponents),
     examples: mergeExamples(group),
     related: [],
     provenance,
@@ -199,34 +199,29 @@ function mergeExamples(group: Group): Example[] {
         current.snippet = example.snippet;
     }
   }
-  return [...byId.values()].map((example) => ({
+  return [...byId.values()].map(example => ({
     ...example,
     name: example.name || nameFromStoryId(example.id),
   }));
 }
 
 export function nameFromStoryId(id: string): string {
-  const slug = id.split("--").at(-1) ?? id;
-  const words = slug.split("-").filter(Boolean).join(" ");
+  const slug = id.split('--').at(-1) ?? id;
+  const words = slug.split('-').filter(Boolean).join(' ');
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
 function escapeRegExp(name: string): string {
-  return name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function addRelated(components: Component[]): void {
-  const names = [...new Set(components.map((component) => component.name))];
+  const names = [...new Set(components.map(component => component.name))];
   const patterns = new Map(
-    names.map((name) => [
-      name,
-      new RegExp(`<${escapeRegExp(name)}[\\s>/]`, "g"),
-    ]),
+    names.map(name => [name, new RegExp(`<${escapeRegExp(name)}[\\s>/]`, 'g')]),
   );
   for (const component of components) {
-    const text = component.examples
-      .map((example) => example.snippet)
-      .join("\n");
+    const text = component.examples.map(example => example.snippet).join('\n');
     const counts: [string, number][] = [];
     for (const name of names) {
       if (name === component.name) continue;

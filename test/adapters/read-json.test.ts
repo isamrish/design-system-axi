@@ -1,97 +1,95 @@
-import { writeFileSync } from "node:fs";
-import { type Server, createServer } from "node:http";
-import type { AddressInfo } from "node:net";
-import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { isUrl, readJson } from "../../src/adapters/read-json.js";
-import { tmpDir } from "../helpers/tmp.js";
+import { writeFileSync } from 'node:fs';
+import { type Server, createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { isUrl, readJson } from '../../src/adapters/read-json.js';
+import { tmpDir } from '../helpers/tmp.js';
 
-const HINT = "Check the source location";
+const HINT = 'Check the source location';
 
-describe("readJson from files", () => {
-  it("parses a JSON file", async () => {
-    const file = join(tmpDir(), "a.json");
+describe('readJson from files', () => {
+  it('parses a JSON file', async () => {
+    const file = join(tmpDir(), 'a.json');
     writeFileSync(file, '{"ok":true}');
     expect(await readJson(file, HINT)).toEqual({ ok: true });
   });
 
-  it("reports a missing file", async () => {
-    const file = join(tmpDir(), "missing.json");
+  it('reports a missing file', async () => {
+    const file = join(tmpDir(), 'missing.json');
     await expect(readJson(file, HINT)).rejects.toMatchObject({
-      code: "SOURCE_UNREACHABLE",
+      code: 'SOURCE_UNREACHABLE',
       message: `cannot read ${file} (file not found)`,
       suggestions: [HINT],
     });
   });
 
-  it("reports a non-JSON file", async () => {
-    const file = join(tmpDir(), "page.html");
-    writeFileSync(file, "<html></html>");
+  it('reports a non-JSON file', async () => {
+    const file = join(tmpDir(), 'page.html');
+    writeFileSync(file, '<html></html>');
     await expect(readJson(file, HINT)).rejects.toMatchObject({
-      code: "SOURCE_UNREACHABLE",
+      code: 'SOURCE_UNREACHABLE',
       message: `cannot read ${file} (not JSON)`,
     });
   });
 });
 
-describe("readJson from URLs", () => {
+describe('readJson from URLs', () => {
   let server: Server;
   let base: string;
 
   beforeEach(async () => {
     server = createServer((req, res) => {
-      if (req.url === "/ok.json")
+      if (req.url === '/ok.json')
         return res
-          .writeHead(200, { "content-type": "application/json" })
+          .writeHead(200, { 'content-type': 'application/json' })
           .end('{"v":0}');
-      if (req.url === "/html")
+      if (req.url === '/html')
         return res
-          .writeHead(200, { "content-type": "text/html" })
-          .end("<!doctype html>");
-      if (req.url === "/partial") {
-        res.writeHead(200, { "content-length": "1000" });
+          .writeHead(200, { 'content-type': 'text/html' })
+          .end('<!doctype html>');
+      if (req.url === '/partial') {
+        res.writeHead(200, { 'content-length': '1000' });
         res.write('{"v":');
         setTimeout(() => res.socket?.destroy(), 20);
         return;
       }
-      res.writeHead(404).end("missing");
+      res.writeHead(404).end('missing');
     });
-    await new Promise<void>((resolve) =>
-      server.listen(0, "127.0.0.1", resolve),
-    );
+    await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   });
 
   afterEach(async () => {
-    await new Promise<void>((resolve) => server.close(() => resolve()));
+    await new Promise<void>(resolve => server.close(() => resolve()));
   });
 
-  it("detects URLs", () => {
+  it('detects URLs', () => {
     expect(isUrl(base)).toBe(true);
-    expect(isUrl("./storybook-static")).toBe(false);
+    expect(isUrl('./storybook-static')).toBe(false);
   });
 
-  it("parses a JSON response", async () => {
+  it('parses a JSON response', async () => {
     expect(await readJson(`${base}/ok.json`, HINT)).toEqual({ v: 0 });
   });
 
-  it("reports HTTP errors", async () => {
+  it('reports HTTP errors', async () => {
     await expect(readJson(`${base}/nope`, HINT)).rejects.toMatchObject({
-      code: "SOURCE_UNREACHABLE",
+      code: 'SOURCE_UNREACHABLE',
       message: `cannot read ${base}/nope (HTTP 404)`,
     });
   });
 
-  it("reports HTML served with 200", async () => {
+  it('reports HTML served with 200', async () => {
     await expect(readJson(`${base}/html`, HINT)).rejects.toMatchObject({
-      code: "SOURCE_UNREACHABLE",
+      code: 'SOURCE_UNREACHABLE',
       message: `cannot read ${base}/html (not JSON)`,
     });
   });
 
-  it("reports a body read failure as SOURCE_UNREACHABLE", async () => {
+  it('reports a body read failure as SOURCE_UNREACHABLE', async () => {
     await expect(readJson(`${base}/partial`, HINT)).rejects.toMatchObject({
-      code: "SOURCE_UNREACHABLE",
+      code: 'SOURCE_UNREACHABLE',
     });
   });
 });

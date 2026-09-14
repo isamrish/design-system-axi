@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
-import { sourceUnreachable } from "../errors.js";
+import { readFile } from 'node:fs/promises';
+import { sourceUnreachable } from '../errors.js';
 
 export function isUrl(location: string): boolean {
   return /^https?:\/\//i.test(location);
@@ -16,7 +16,7 @@ export async function readJson(
   try {
     return JSON.parse(text) as unknown;
   } catch {
-    throw sourceUnreachable(location, "not JSON", hint);
+    throw sourceUnreachable(location, 'not JSON', hint);
   }
 }
 
@@ -25,7 +25,7 @@ async function fetchText(url: string, hint: string): Promise<string> {
   try {
     response = await fetch(url, {
       signal: AbortSignal.timeout(30_000),
-      headers: { accept: "application/json" },
+      headers: { accept: 'application/json' },
     });
   } catch (error) {
     throw sourceUnreachable(
@@ -49,12 +49,12 @@ async function fetchText(url: string, hint: string): Promise<string> {
 
 async function readText(path: string, hint: string): Promise<string> {
   try {
-    return await readFile(path, "utf8");
+    return await readFile(path, 'utf8');
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     throw sourceUnreachable(
       path,
-      code === "ENOENT" ? "file not found" : String(code ?? error),
+      code === 'ENOENT' ? 'file not found' : String(code ?? error),
       hint,
     );
   }

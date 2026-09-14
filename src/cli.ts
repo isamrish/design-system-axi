@@ -1,17 +1,17 @@
-import { runAxiCli } from "axi-sdk-js";
-import { componentCommand } from "./commands/component.js";
-import { componentsCommand } from "./commands/components.js";
+import { runAxiCli } from 'axi-sdk-js';
+import { componentCommand } from './commands/component.js';
+import { componentsCommand } from './commands/components.js';
 import {
   type CommandContext,
   type ContextDeps,
   createContext,
-} from "./commands/context.js";
-import { findCommand } from "./commands/find.js";
-import { homeCommand } from "./commands/home.js";
-import { setupCommand } from "./commands/setup.js";
-import { syncCommand } from "./commands/sync.js";
-import { DESCRIPTION, TOP_LEVEL_HELP, getCommandHelp } from "./help.js";
-import { VERSION } from "./version.js";
+} from './commands/context.js';
+import { findCommand } from './commands/find.js';
+import { homeCommand } from './commands/home.js';
+import { setupCommand } from './commands/setup.js';
+import { syncCommand } from './commands/sync.js';
+import { DESCRIPTION, TOP_LEVEL_HELP, getCommandHelp } from './help.js';
+import { VERSION } from './version.js';
 
 export type MainOptions = Partial<ContextDeps> & {
   stdout?: { write: (chunk: string) => unknown };
@@ -33,11 +33,11 @@ export async function main(
     resolveContext: () => context,
     home: () => homeCommand(context),
     commands: {
-      components: (args) => componentsCommand(args, context),
-      component: (args) => componentCommand(args, context),
-      find: (args) => findCommand(args, context),
-      sync: (args) => syncCommand(args, context),
-      setup: (args) => setupCommand(args, context),
+      components: args => componentsCommand(args, context),
+      component: args => componentCommand(args, context),
+      find: args => findCommand(args, context),
+      sync: args => syncCommand(args, context),
+      setup: args => setupCommand(args, context),
     },
   });
 }

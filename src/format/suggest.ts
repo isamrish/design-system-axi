@@ -7,7 +7,7 @@ export function suggestNames(
 ): string[] {
   const needle = input.toLowerCase();
   const scored = [...new Set(candidates)]
-    .map((name) => {
+    .map(name => {
       const hay = name.toLowerCase();
       return {
         name,
@@ -16,7 +16,7 @@ export function suggestNames(
       };
     })
     .filter(
-      (candidate) => candidate.prefix || candidate.distance <= MAX_DISTANCE,
+      candidate => candidate.prefix || candidate.distance <= MAX_DISTANCE,
     );
   scored.sort(
     (a, b) =>
@@ -24,7 +24,7 @@ export function suggestNames(
       a.distance - b.distance ||
       (a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
   );
-  return scored.slice(0, max).map((candidate) => candidate.name);
+  return scored.slice(0, max).map(candidate => candidate.name);
 }
 
 export function levenshtein(a: string, b: string): number {

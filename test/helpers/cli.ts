@@ -1,4 +1,4 @@
-import { main, type MainOptions } from "../../src/cli.js";
+import { main, type MainOptions } from '../../src/cli.js';
 
 export interface CliResult {
   out: string;
@@ -7,9 +7,9 @@ export interface CliResult {
 
 export async function runCli(
   argv: string[],
-  options: Omit<MainOptions, "stdout"> = {},
+  options: Omit<MainOptions, 'stdout'> = {},
 ): Promise<CliResult> {
-  let out = "";
+  let out = '';
   process.exitCode = undefined;
   await main(argv, {
     ...options,
@@ -20,7 +20,7 @@ export async function runCli(
       },
     },
   });
-  const code = typeof process.exitCode === "number" ? process.exitCode : 0;
+  const code = typeof process.exitCode === 'number' ? process.exitCode : 0;
   process.exitCode = undefined;
   return { out, code };
 }

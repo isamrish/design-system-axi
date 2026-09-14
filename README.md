@@ -128,6 +128,8 @@ Sources can live in `design-system.axi.json` at your project root:
 
 Flags override `DESIGN_SYSTEM_AXI_STORYBOOK`, `DESIGN_SYSTEM_AXI_PRIMER`, and `DESIGN_SYSTEM_AXI_CATALOG`, which override the file.
 
+Commands work from any subdirectory: they use the nearest `.design-system-axi/catalog.json` or `design-system.axi.json` above the current directory, like git.
+
 ## Development
 
 ```sh
