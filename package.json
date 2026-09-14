@@ -6,7 +6,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/isamrish/design-system-axi.git"
+    "url": "git+https://github.com/isamrish/design-system-axi.git"
   },
   "keywords": [
     "axi",
@@ -18,7 +18,7 @@
     "components"
   ],
   "bin": {
-    "design-system-axi": "./dist/bin/design-system-axi.js"
+    "design-system-axi": "dist/bin/design-system-axi.js"
   },
   "files": [
     "dist",
