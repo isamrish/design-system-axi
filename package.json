@@ -22,6 +22,7 @@
   },
   "files": [
     "dist",
+    "skills/design-system-axi",
     "LICENSE",
     "README.md"
   ],
@@ -38,6 +39,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "eval": "tsx eval/run.ts",
+    "build:skill": "tsx scripts/build-skill.ts",
     "prepublishOnly": "pnpm run build"
   },
   "license": "MIT",
