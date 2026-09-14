@@ -43,12 +43,14 @@ describe("error factories", () => {
         ['Run `design-system-axi find "<intent>"` to search by purpose'],
       ],
       [
-        sourceUnreachable("https://x/manifests/components.json", "HTTP 404"),
+        sourceUnreachable(
+          "https://x/manifests/components.json",
+          "HTTP 404",
+          "Check the Storybook URL",
+        ),
         "SOURCE_UNREACHABLE",
         "cannot read https://x/manifests/components.json (HTTP 404)",
-        [
-          "Storybook manifests need Storybook >= 10 with features.componentsManifest",
-        ],
+        ["Check the Storybook URL"],
       ],
       [
         manifestShape("storybook", "components.x.stories", "expected array"),

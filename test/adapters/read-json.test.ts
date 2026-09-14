@@ -6,25 +6,28 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { isUrl, readJson } from "../../src/adapters/read-json.js";
 import { tmpDir } from "../helpers/tmp.js";
 
+const HINT = "Check the source location";
+
 describe("readJson from files", () => {
   it("parses a JSON file", async () => {
     const file = join(tmpDir(), "a.json");
     writeFileSync(file, '{"ok":true}');
-    expect(await readJson(file)).toEqual({ ok: true });
+    expect(await readJson(file, HINT)).toEqual({ ok: true });
   });
 
   it("reports a missing file", async () => {
     const file = join(tmpDir(), "missing.json");
-    await expect(readJson(file)).rejects.toMatchObject({
+    await expect(readJson(file, HINT)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
       message: `cannot read ${file} (file not found)`,
+      suggestions: [HINT],
     });
   });
 
   it("reports a non-JSON file", async () => {
     const file = join(tmpDir(), "page.html");
     writeFileSync(file, "<html></html>");
-    await expect(readJson(file)).rejects.toMatchObject({
+    await expect(readJson(file, HINT)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
       message: `cannot read ${file} (not JSON)`,
     });
@@ -69,25 +72,25 @@ describe("readJson from URLs", () => {
   });
 
   it("parses a JSON response", async () => {
-    expect(await readJson(`${base}/ok.json`)).toEqual({ v: 0 });
+    expect(await readJson(`${base}/ok.json`, HINT)).toEqual({ v: 0 });
   });
 
   it("reports HTTP errors", async () => {
-    await expect(readJson(`${base}/nope`)).rejects.toMatchObject({
+    await expect(readJson(`${base}/nope`, HINT)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
       message: `cannot read ${base}/nope (HTTP 404)`,
     });
   });
 
   it("reports HTML served with 200", async () => {
-    await expect(readJson(`${base}/html`)).rejects.toMatchObject({
+    await expect(readJson(`${base}/html`, HINT)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
       message: `cannot read ${base}/html (not JSON)`,
     });
   });
 
   it("reports a body read failure as SOURCE_UNREACHABLE", async () => {
-    await expect(readJson(`${base}/partial`)).rejects.toMatchObject({
+    await expect(readJson(`${base}/partial`, HINT)).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
     });
   });

@@ -169,6 +169,9 @@ describe("loadPrimer", () => {
       ),
     ).rejects.toMatchObject({
       code: "SOURCE_UNREACHABLE",
+      suggestions: [
+        "Install @primer/react, or point --primer at a directory containing package.json and generated/components.json",
+      ],
     });
   });
 });

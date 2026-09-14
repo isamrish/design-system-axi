@@ -25,13 +25,15 @@ export function notFound(name: string, suggestions: string[]): AxiError {
   return new AxiError(`no component "${name}"`, "NOT_FOUND", help);
 }
 
-export function sourceUnreachable(location: string, reason: string): AxiError {
+export function sourceUnreachable(
+  location: string,
+  reason: string,
+  suggestion: string,
+): AxiError {
   return new AxiError(
     `cannot read ${location} (${reason})`,
     "SOURCE_UNREACHABLE",
-    [
-      "Storybook manifests need Storybook >= 10 with features.componentsManifest",
-    ],
+    [suggestion],
   );
 }
 
