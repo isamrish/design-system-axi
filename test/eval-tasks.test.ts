@@ -10,21 +10,31 @@ interface Registration {
   tasks: { id: string; intent: string; golden: string[] }[];
 }
 
-const registration = JSON.parse(
-  readFileSync(new URL("../eval/tasks.json", import.meta.url), "utf8"),
-) as Registration;
+const registrations = ["tasks.json", "tasks-2.json"].map(
+  (file) =>
+    JSON.parse(
+      readFileSync(new URL(`../eval/${file}`, import.meta.url), "utf8"),
+    ) as Registration,
+);
 
-describe("eval registration", () => {
-  it("has 20 uniquely identified tasks with golden components", () => {
-    expect(registration.tasks).toHaveLength(20);
-    expect(new Set(registration.tasks.map((task) => task.id)).size).toBe(20);
-    for (const task of registration.tasks) {
-      expect(task.intent.length).toBeGreaterThan(0);
-      expect(task.golden.length).toBeGreaterThan(0);
+describe("eval registrations", () => {
+  it("are numbered in order", () => {
+    expect(registrations.map((r) => r.registration)).toEqual([1, 2]);
+  });
+
+  it("each have 20 tasks with golden components and ids unique across registrations", () => {
+    const ids = registrations.flatMap((r) => r.tasks.map((task) => task.id));
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const registration of registrations) {
+      expect(registration.tasks).toHaveLength(20);
+      for (const task of registration.tasks) {
+        expect(task.intent.length).toBeGreaterThan(0);
+        expect(task.golden.length).toBeGreaterThan(0);
+      }
     }
   });
 
-  it("only names components that exist in the Primer catalog", async () => {
+  it("only name components that exist in the Primer catalog", async () => {
     const [sb, pr] = await Promise.all([
       loadStorybook(
         fileURLToPath(new URL("./fixtures/primer/storybook", import.meta.url)),
@@ -36,8 +46,8 @@ describe("eval registration", () => {
     const names = new Set(
       mergeFragments([sb, pr]).components.map((component) => component.name),
     );
-    const missing = registration.tasks
-      .flatMap((task) => task.golden)
+    const missing = registrations
+      .flatMap((r) => r.tasks.flatMap((task) => task.golden))
       .filter((name) => !names.has(name));
     expect(missing).toEqual([]);
   });

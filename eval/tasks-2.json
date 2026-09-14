@@ -1,0 +1,108 @@
+{
+  "registration": 2,
+  "registered": "2026-09-14",
+  "designSystem": "@primer/react@38.39.0",
+  "note": "Held-out set, written before any search run on these intents and before the find changes that followed. Intents do not reuse wording from registration 1 or from the ad-hoc queries run on 2026-09-14.",
+  "tasks": [
+    {
+      "id": "r2-01",
+      "intent": "let people choose exactly one plan from a few radio options",
+      "golden": ["RadioGroup", "Radio"]
+    },
+    {
+      "id": "r2-02",
+      "intent": "timestamp that reads like 3 hours ago",
+      "golden": ["RelativeTime"]
+    },
+    {
+      "id": "r2-03",
+      "intent": "overlapping avatars of everyone collaborating on a file",
+      "golden": ["AvatarStack"]
+    },
+    {
+      "id": "r2-04",
+      "intent": "vertical history of events on an issue",
+      "golden": ["Timeline"]
+    },
+    {
+      "id": "r2-05",
+      "intent": "suggestions appear while typing in an input",
+      "golden": ["Autocomplete"]
+    },
+    {
+      "id": "r2-06",
+      "intent": "percentage bar for an upload that is halfway done",
+      "golden": ["ProgressBar"]
+    },
+    {
+      "id": "r2-07",
+      "intent": "monospace label showing a git branch",
+      "golden": ["BranchName"]
+    },
+    {
+      "id": "r2-08",
+      "intent": "small floating callout pointing at a new feature",
+      "golden": ["Popover"]
+    },
+    {
+      "id": "r2-09",
+      "intent": "window over the page asking for a name before creating a project",
+      "golden": ["Dialog"]
+    },
+    {
+      "id": "r2-10",
+      "intent": "several checkboxes for choosing email notification types",
+      "golden": ["CheckboxGroup", "Checkbox"]
+    },
+    {
+      "id": "r2-11",
+      "intent": "hide an element on narrow screens",
+      "golden": ["Hidden"]
+    },
+    {
+      "id": "r2-12",
+      "intent": "main content area with a resizable side pane",
+      "golden": ["PageLayout", "SplitPageLayout"]
+    },
+    {
+      "id": "r2-13",
+      "intent": "row of formatting icon actions above a markdown editor",
+      "golden": ["ActionBar"]
+    },
+    {
+      "id": "r2-14",
+      "intent": "shorten a long file path with an ellipsis",
+      "golden": ["Truncate"]
+    },
+    {
+      "id": "r2-15",
+      "intent": "colored issue label like bug or enhancement",
+      "golden": ["IssueLabel", "Label"]
+    },
+    {
+      "id": "r2-16",
+      "intent": "render a GitHub icon glyph",
+      "golden": ["Octicon"]
+    },
+    {
+      "id": "r2-17",
+      "intent": "native dropdown for picking a country",
+      "golden": ["Select"]
+    },
+    {
+      "id": "r2-18",
+      "intent": "arrange items vertically with even gaps",
+      "golden": ["Stack"]
+    },
+    {
+      "id": "r2-19",
+      "intent": "section title text at a given heading level",
+      "golden": ["Heading"]
+    },
+    {
+      "id": "r2-20",
+      "intent": "inline hyperlink to the documentation",
+      "golden": ["Link"]
+    }
+  ]
+}

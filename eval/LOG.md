@@ -89,3 +89,7 @@ CI (`.github/workflows/ci.yml`) now runs `pnpm run eval` as the final step of `b
 Change: removed `"on"` from the `["toggle", "switch", "checkbox", "on", "off"]` group in `src/search/synonyms.ts` (now `["toggle", "switch", "checkbox", "off"]`). `"on"` is also listed in `STOPWORDS` in `src/search/tokenize.ts`, and `tokenize` filters stopwords out before any token reaches the synonym lookup, so `synonymsOf("on")` was dead code — no query could ever produce the token `"on"` for the synonym index to expand. Removing it does not change matching behavior for any reachable query; `"off"` stays since it is not a stopword.
 
 Before → after retrieval: `pnpm run eval` gave 17/20 (85%) both before and after this change (identical hits: t01-t04, t06-t11, t14-t20; misses: t05, t12, t13, unchanged). `pnpm vitest run` (119/119, including `test/search`) passes unchanged.
+
+## 2026-09-14 — Registration 2
+
+20 new app-builder intents registered in `eval/tasks-2.json` as a held-out set, committed before any `find` run on them and before the `find` changes that follow. They avoid wording from registration 1 and from ten ad-hoc queries run against 0.1.1 on 2026-09-14 (which showed about 6/10 top-3 usefulness and motivated this work). Golden components were chosen from knowledge of Primer React; the integrity test only checks their spelling against the catalog.
