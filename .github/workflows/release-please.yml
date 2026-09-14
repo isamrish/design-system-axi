@@ -37,5 +37,8 @@ jobs:
       - run: pnpm run build
         if: ${{ steps.release.outputs.release_created }}
 
-      - run: npm publish --access public --provenance
+      # The npm trusted publisher only allows staging: the version is uploaded
+      # with provenance and goes live after a maintainer approves it with 2FA
+      # (`npm stage list design-system-axi`, then `npm stage approve <stage-id>`).
+      - run: npm stage publish --access public --provenance
         if: ${{ steps.release.outputs.release_created }}
