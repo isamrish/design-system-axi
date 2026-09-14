@@ -20,3 +20,13 @@ Why it mattered: several components (notably `Timeline`, whose description is a 
 Before → after retrieval: 15/20 (75%) → 15/20 (75%). No task flipped by itself — the noise it removes only stops competing with the correct answer once a later attempt makes the correct answer's own signal strong enough to win. No regressions; all tests pass after updating `test/search/tokenize.test.ts`'s expectation for `"Confirm before deleting the repositories"` to drop `"before"` from the expected token list (intentional, since `before` is now a stopword).
 
 Kept: retrieval did not drop, and it is a prerequisite for a later attempt's gains on t12/t13.
+
+## 2026-09-13 — Tuning attempt 2: add `pick` and `textarea` to existing synonym groups
+
+Change: added `pick` to the `["dropdown", "menu", "select", "picker", "combobox"]` group, and `textarea` to the `["input", "field", "textbox", "text", "form"]` group, in `src/search/synonyms.ts`.
+
+Why it generalizes: "pick" is ordinary UI vocabulary for choosing from a set of options ("let the user pick an option"), synonymous with "select"/"picker" independent of any task wording — the intent tasks never use the literal word "pick" for a component named "Pick". "textarea" is the standard HTML/UI term for a multi-line text input; it belongs in the same group as the existing `textbox`/`text` members for the same reason `dialog` (also a component name) already sits in the modal/popup group — a term can be both a generic UI word and a component's exact name, and Primer's `Textarea` name doesn't camelCase-split into `text`+`area` so it would otherwise never be reachable by the generic word "text".
+
+Before → after retrieval (on top of attempt 1): 15/20 (75%) → 15/20 (75%). No task flipped by itself at the existing `SYNONYM_WEIGHT`, because a synonym-weighted match still couldn't outscore literal, full-weight name matches on unrelated `*List` components. All tests pass; no regressions.
+
+Kept: retrieval did not drop, and it supplies the signal a later attempt needed for t11/t17.
