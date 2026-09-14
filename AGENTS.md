@@ -31,8 +31,9 @@ pnpm run eval
 
 ## Release process
 
-Releases are cut by release-please from conventional commit messages on `main`; merging the bot's release PR triggers `npm publish --provenance` via `.github/workflows/release-please.yml`, using npm's OIDC trusted-publisher flow (`id-token: write`), not an `NPM_TOKEN` secret.
-`.release-please-manifest.json` is primed at `0.1.0`, the version published to npm by hand before release-please takes over. After that manual publish, set `bootstrap-sha` in `release-please-config.json` to the published commit; release-please owns every version after that.
+Releases are cut by release-please from conventional commit messages on `main`; merging the bot's release PR runs `npm stage publish --provenance` via `.github/workflows/release-please.yml`, using npm's OIDC trusted-publisher flow (`id-token: write`), not an `NPM_TOKEN` secret.
+The trusted publisher is deliberately limited to staging, so a release is not live until a maintainer approves it with 2FA: `npm stage list design-system-axi`, then `npm stage approve <stage-id>` (or approve on npmjs.com). A plain `npm publish` from CI fails with `E404` by design.
+`.release-please-manifest.json` was primed at `0.1.0`, published by hand before release-please took over, and `bootstrap-sha` in `release-please-config.json` points at that commit; release-please owns every version after that.
 Do not hand-edit `CHANGELOG.md` or `.release-please-manifest.json` (a guard workflow blocks PRs that touch them), do not bump `package.json`'s `version` by hand, and regenerate `skills/design-system-axi/SKILL.md` with `pnpm run build:skill` instead of editing it.
 Every `pull_request` workflow must `paths-ignore` the release-please output set (`.release-please-manifest.json`, `CHANGELOG.md`, `package.json`).
 
