@@ -1,7 +1,7 @@
 import { intFlag, parseCommandArgs } from '../args.js';
 import { requireCatalog } from '../catalog/store.js';
 import { BIN, validationError } from '../errors.js';
-import { buildIndex, search } from '../search/rank.js';
+import { WHY_TEXT_LIMIT, buildIndex, search } from '../search/rank.js';
 import type { CommandContext } from './context.js';
 
 const FLAGS = { limit: { type: 'string' } } as const;
@@ -28,6 +28,10 @@ export async function findCommand(
       why: match.why,
     })),
   };
+
+  if (matches.some(match => match.whyShortened)) {
+    output.why_shown = `evidence text shortened to ${WHY_TEXT_LIMIT} chars; run \`${BIN} component <Name>\` for the full text`;
+  }
 
   const top = matches[0]?.component;
   if (!top) {

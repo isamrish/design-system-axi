@@ -81,6 +81,23 @@ describe('findCommand', () => {
     });
   });
 
+  it('says when evidence text was shortened', async () => {
+    const ctx = await project([
+      makeComponent({
+        id: 'confirmationdialog',
+        name: 'ConfirmationDialog',
+        description:
+          'A special kind of dialog that asks people to confirm a destructive action.',
+      }),
+    ]);
+    const output = await findCommand(['destructive'], ctx);
+    expect(output.why_shown).toBe(
+      'evidence text shortened to 40 chars; run `design-system-axi component <Name>` for the full text',
+    );
+    const plain = await findCommand(['dialog'], ctx);
+    expect(plain).not.toHaveProperty('why_shown');
+  });
+
   it('caps matches at --limit', async () => {
     const ctx = await project([
       makeComponent({ id: 'button', name: 'Button' }),

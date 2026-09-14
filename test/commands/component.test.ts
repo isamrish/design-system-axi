@@ -202,6 +202,44 @@ describe('componentCommand', () => {
   });
 });
 
+describe('truncation hints', () => {
+  it('says how much of long text is shown and how to get the rest', async () => {
+    const cwd = tmpDir();
+    await writeProjectCatalog(
+      cwd,
+      makeCatalog([
+        makeComponent({
+          id: 'widget',
+          name: 'Widget',
+          description: 'd'.repeat(400),
+          props: [
+            makeProp({ name: 'kind', type: `'${'x'.repeat(80)}'` }),
+            makeProp({ name: 'size', type: "'small' | 'large'" }),
+          ],
+          examples: [
+            {
+              id: 'widget--default',
+              name: 'Default',
+              snippet: 's'.repeat(700),
+            },
+          ],
+        }),
+      ]),
+    );
+    const ctx = { cwd, env: {}, now };
+    const output = await componentCommand(['Widget'], ctx);
+    expect(output.description_shown).toBe('299 of 400 chars (use --full)');
+    expect(output.example_shown).toBe('599 of 700 chars (use --full)');
+    expect(output.types_shown).toBe('1 prop type cut to 59 chars (use --full)');
+
+    const full = await componentCommand(['Widget', '--full'], ctx);
+    expect(full).not.toHaveProperty('description_shown');
+    expect(full).not.toHaveProperty('example_shown');
+    expect(full).not.toHaveProperty('types_shown');
+    expect(full.description).toBe('d'.repeat(400));
+  });
+});
+
 describe('orderProps', () => {
   it('orders required, then literal-typed, then alphabetical', () => {
     const ordered = orderProps([
