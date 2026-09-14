@@ -93,3 +93,12 @@ Before → after retrieval: `pnpm run eval` gave 17/20 (85%) both before and aft
 ## 2026-09-14 — Registration 2
 
 20 new app-builder intents registered in `eval/tasks-2.json` as a held-out set, committed before any `find` run on them and before the `find` changes that follow. They avoid wording from registration 1 and from ten ad-hoc queries run against 0.1.1 on 2026-09-14 (which showed about 6/10 top-3 usefulness and motivated this work). Golden components were chosen from knowledge of Primer React; the integrity test only checks their spelling against the catalog.
+
+## 2026-09-14 — Baseline across registrations (before find changes)
+
+`eval/run.ts` now scores every `eval/tasks*.json` registration. Registration 1 keeps gating CI at 85%; registration 2 is a held-out measurement with no gate.
+
+- Registration 1 (in-sample, tuned on 2026-09-13): 17/20 (85%) · misses t05, t12, t13.
+- Registration 2 (held-out): **10/20 (50%)** · avg_tokens_per_task 388 · misses r2-05 Autocomplete, r2-08 Popover, r2-09 Dialog, r2-10 CheckboxGroup/Checkbox, r2-11 Hidden, r2-14 Truncate, r2-16 Octicon, r2-17 Select, r2-19 Heading, r2-20 Link.
+
+Observation: `Timeline` appears in 11 of 20 registration-2 top-3 lists. Its Storybook description is a long internal engineering note, so incidental words match it at description weight.
