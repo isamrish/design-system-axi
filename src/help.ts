@@ -26,6 +26,7 @@ flags:
 `,
   find: `usage: design-system-axi find "<intent>" [--limit <n>]
 Ranks components for what you are building, with the evidence for each match.
+match: strong when a word from the intent appears in the component name, a subcomponent name, or its description; weak otherwise (confirm weak matches with component <Name>).
 flags:
   --limit <n>    maximum matches (default 5)
 `,

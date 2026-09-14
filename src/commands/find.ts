@@ -24,7 +24,7 @@ export async function findCommand(
     matches: matches.map((match) => ({
       component: match.component.name,
       status: match.component.status,
-      score: match.score,
+      match: match.strength,
       why: match.why,
     })),
   };
@@ -41,8 +41,17 @@ export async function findCommand(
   const shared =
     catalog.components.filter((component) => component.name === top.name)
       .length > 1;
+  const ref = shared ? `${top.id} --id` : top.name;
+  if (matches.every((match) => match.strength === "weak")) {
+    output.result = `no strong match for "${intent}"; these components only partly match`;
+    output.help = [
+      `Run \`${BIN} component ${ref}\` to check whether it fits`,
+      `Run \`${BIN} components\` to browse all components`,
+    ];
+    return output;
+  }
   output.help = [
-    `Run \`${BIN} component ${shared ? `${top.id} --id` : top.name}\` for props, import, and an example`,
+    `Run \`${BIN} component ${ref}\` for props, import, and an example`,
   ];
   return output;
 }

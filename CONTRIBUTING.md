@@ -18,7 +18,7 @@ Thanks for wanting to contribute.
 - Do not hand-edit `CHANGELOG.md` or `.release-please-manifest.json`, and do not bump `package.json`'s `version` by hand. release-please updates them in its release PR.
 - Do not hand-edit `skills/design-system-axi/SKILL.md`. It is generated from `src/skill.ts`; run `pnpm run build:skill` and commit the result.
 - Tests never hit the network. A new source adapter needs fixtures captured from real data and a drift test that expects `MANIFEST_SHAPE`.
-- A change to `find` ranking, tokenization, or synonyms includes a before/after `pnpm run eval` entry in `eval/LOG.md`. Never edit a registered task in `eval/tasks.json`.
+- A change to `find` ranking, tokenization, or synonyms includes a before/after `pnpm run eval` entry in `eval/LOG.md`. Never edit a registered task in `eval/tasks*.json`; add a new registration instead.
 
 ## Questions
 

@@ -1,0 +1,108 @@
+{
+  "registration": 3,
+  "registered": "2026-09-14",
+  "designSystem": "@primer/react@38.39.0",
+  "note": "Clean held-out set registered after the 2026-09-14 find changes (prop descriptions, length normalization, weak matches) and before any search run on these intents. Measured once; no ranking, tokenizer, or synonym change may be made on the basis of its results without a new registration.",
+  "tasks": [
+    {
+      "id": "r3-01",
+      "intent": "removable pill for a selected filter",
+      "golden": ["Token"]
+    },
+    {
+      "id": "r3-02",
+      "intent": "row of labels that collapses the extra ones into a count",
+      "golden": ["LabelGroup"]
+    },
+    {
+      "id": "r3-03",
+      "intent": "round badge showing an app logo",
+      "golden": ["CircleBadge"]
+    },
+    {
+      "id": "r3-04",
+      "intent": "list of selectable items with leading icons",
+      "golden": ["ActionList"]
+    },
+    {
+      "id": "r3-05",
+      "intent": "global top bar with the site logo and account menu",
+      "golden": ["Header"]
+    },
+    {
+      "id": "r3-06",
+      "intent": "secondary navigation links for filtering a page",
+      "golden": ["SubNav"]
+    },
+    {
+      "id": "r3-07",
+      "intent": "render a floating layer outside the parent DOM node",
+      "golden": ["Portal"]
+    },
+    {
+      "id": "r3-08",
+      "intent": "wrap an input with its label, caption, and validation text",
+      "golden": ["FormControl"]
+    },
+    {
+      "id": "r3-09",
+      "intent": "paragraph text in a muted color",
+      "golden": ["Text"]
+    },
+    {
+      "id": "r3-10",
+      "intent": "bordered container for a group of related content",
+      "golden": ["Card"]
+    },
+    {
+      "id": "r3-11",
+      "intent": "announce a status change to screen readers",
+      "golden": ["AriaStatus", "Announce", "AriaAlert"]
+    },
+    {
+      "id": "r3-12",
+      "intent": "scrollable area that keyboard users can focus",
+      "golden": ["ScrollableRegion"]
+    },
+    {
+      "id": "r3-13",
+      "intent": "several related buttons joined together",
+      "golden": ["ButtonGroup"]
+    },
+    {
+      "id": "r3-14",
+      "intent": "square button with only an icon and an accessible label",
+      "golden": ["IconButton"]
+    },
+    {
+      "id": "r3-15",
+      "intent": "anchor element styled like a button",
+      "golden": ["LinkButton"]
+    },
+    {
+      "id": "r3-16",
+      "intent": "filterable list with a search box above it",
+      "golden": ["FilteredActionList", "SelectPanel"]
+    },
+    {
+      "id": "r3-17",
+      "intent": "content panels switched by underlined tabs",
+      "golden": ["UnderlinePanels", "Tabs"]
+    },
+    {
+      "id": "r3-18",
+      "intent": "floating surface positioned next to the element that opened it",
+      "golden": ["AnchoredOverlay", "Overlay"]
+    },
+    {
+      "id": "r3-19",
+      "intent": "legacy page heading with title and actions",
+      "golden": ["Pagehead", "PageHeader"]
+    },
+    {
+      "id": "r3-20",
+      "intent": "horizontal tab links for switching between pages",
+      "golden": ["TabNav", "UnderlineNav"]
+    }
+  ]
+}

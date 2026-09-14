@@ -89,3 +89,52 @@ CI (`.github/workflows/ci.yml`) now runs `pnpm run eval` as the final step of `b
 Change: removed `"on"` from the `["toggle", "switch", "checkbox", "on", "off"]` group in `src/search/synonyms.ts` (now `["toggle", "switch", "checkbox", "off"]`). `"on"` is also listed in `STOPWORDS` in `src/search/tokenize.ts`, and `tokenize` filters stopwords out before any token reaches the synonym lookup, so `synonymsOf("on")` was dead code — no query could ever produce the token `"on"` for the synonym index to expand. Removing it does not change matching behavior for any reachable query; `"off"` stays since it is not a stopword.
 
 Before → after retrieval: `pnpm run eval` gave 17/20 (85%) both before and after this change (identical hits: t01-t04, t06-t11, t14-t20; misses: t05, t12, t13, unchanged). `pnpm vitest run` (119/119, including `test/search`) passes unchanged.
+
+## 2026-09-14 — Registration 2
+
+20 new app-builder intents registered in `eval/tasks-2.json` as a held-out set, committed before any `find` run on them and before the `find` changes that follow. They avoid wording from registration 1 and from ten ad-hoc queries run against 0.1.1 on 2026-09-14 (which showed about 6/10 top-3 usefulness and motivated this work). Golden components were chosen from knowledge of Primer React; the integrity test only checks their spelling against the catalog.
+
+## 2026-09-14 — Baseline across registrations (before find changes)
+
+`eval/run.ts` now scores every `eval/tasks*.json` registration. Registration 1 keeps gating CI at 85%; registration 2 is a held-out measurement with no gate.
+
+- Registration 1 (in-sample, tuned on 2026-09-13): 17/20 (85%) · misses t05, t12, t13.
+- Registration 2 (held-out): **10/20 (50%)** · avg_tokens_per_task 388 · misses r2-05 Autocomplete, r2-08 Popover, r2-09 Dialog, r2-10 CheckboxGroup/Checkbox, r2-11 Hidden, r2-14 Truncate, r2-16 Octicon, r2-17 Select, r2-19 Heading, r2-20 Link.
+
+Observation: `Timeline` appears in 11 of 20 registration-2 top-3 lists. Its Storybook description is a long internal engineering note, so incidental words match it at description weight.
+
+## 2026-09-14 — Search prop descriptions, then length-normalize free text
+
+Both changes were designed after reading registration 2's baseline misses, so from here registration 2 is **no longer held-out**; a fresh registration 3 will be the clean measurement.
+
+1. Index non-deprecated prop descriptions as a `propDescription` field (weight 1.25, between prop names and story names; evidence labelled `prop description`). Primer ships 481 described props that were not searchable.
+   Result: registration 1 17 → 18/20 (90%); registration 2 10 → 9/20 (45%) — r2-13 ActionBar dropped out behind free-text matches.
+2. BM25-style length normalization (b = 0.75) for the free-text fields (`description`, `propDescription`): a word in a long paragraph counts less than the same word in a short one.
+   Result (on top of 1): registration 1 18/20 (90%); registration 2 9/20 (45%). `Timeline` no longer appears in unrelated top-3 lists (it was in 11 of 20), r2-13 ActionBar recovered, r2-04 Timeline (its own golden) dropped out.
+
+Kept both: registration 1 improved, registration 2 did not regress beyond one task, and both remove known noise sources. Remaining registration 2 misses are vocabulary gaps (hyperlink → Link, glyph → Octicon, section title → Heading, suggestions while typing → Autocomplete, hide on narrow screens → Hidden, dropdown → Select), not ranking noise.
+
+## 2026-09-14 — Mark weak matches in find
+
+`find` rows now carry `match: strong|weak` instead of the relative `score` (which showed `1` for every top result, right or wrong). A match is `strong` when a query word — not a synonym — appears in the component's name, a subcomponent name, or its description; otherwise `weak`. When every match is weak, `find` adds `result: no strong match for "<intent>"; these components only partly match` and points to `components`. Ranking is unchanged: retrieval stays registration 1 18/20 (90%), registration 2 9/20 (45%). `eval/run.ts` reports the top match's strength per task.
+
+How the label lines up with correctness (top match strength vs. golden in top 3):
+
+|                | hit, strong | hit, weak | miss, strong | miss, weak |
+| -------------- | ----------- | --------- | ------------ | ---------- |
+| Registration 1 | 13          | 5         | 2            | 0          |
+| Registration 2 | 8           | 1         | 8            | 3          |
+
+`weak` is a reliable warning (3 of 4 weak top matches in registration 2 were misses) but it does not catch most wrong answers: 8 registration-2 misses are still `strong` because an incidental direct word (e.g. "more" in a description) counts as a strong match.
+
+## 2026-09-14 — Registration 3
+
+20 new intents registered in `eval/tasks-3.json` after the find changes above and before any search run on them. They use components and wording not covered by registrations 1–2 or the ad-hoc queries. Registration 3 is measured once and reported as the clean held-out number; no ranking, tokenizer, or synonym change may be justified by its results without registering a new set.
+
+## 2026-09-14 — Registration 3 result (measured once)
+
+retrieval_top3: **11/20 (55%)** · avg_tokens_per_task 382 · raw_manifest_tokens 608464.
+Misses: r3-01 Token, r3-02 LabelGroup, r3-03 CircleBadge, r3-05 Header, r3-06 SubNav, r3-07 Portal, r3-09 Text, r3-10 Card, r3-15 LinkButton.
+Top match strength: 9 hits strong, 2 hits weak (r3-18, r3-20); 6 misses strong, 3 misses weak (r3-01, r3-07, r3-09).
+
+Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registration 2 45% (held-out before these changes, 50% at its baseline); clean held-out registration 3 55%. Keyword ranking finds components whose names or descriptions share the user's words and misses paraphrases (e.g. "pill" → Token, "top bar" → Header, "bordered container" → Card). Treat `find` as a shortlist and confirm with `component`.
