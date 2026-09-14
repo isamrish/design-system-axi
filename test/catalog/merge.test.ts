@@ -223,6 +223,27 @@ describe("mergeFragments", () => {
     ]);
   });
 
+  it("does not throw when a component name contains regex metacharacters", () => {
+    expect(() =>
+      mergeFragments([
+        storybook([
+          entry({ key: "components-weird-name", name: "Weird(Name" }),
+          entry({
+            key: "components-button",
+            name: "Button",
+            examples: [
+              {
+                id: "components-button--default",
+                name: "",
+                snippet: "<Button>Default</Button>",
+              },
+            ],
+          }),
+        ]),
+      ]),
+    ).not.toThrow();
+  });
+
   it("derives example names and related components from snippets", () => {
     const result = mergeFragments([
       storybook([

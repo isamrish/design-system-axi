@@ -211,10 +211,17 @@ export function nameFromStoryId(id: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+function escapeRegExp(name: string): string {
+  return name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function addRelated(components: Component[]): void {
   const names = [...new Set(components.map((component) => component.name))];
   const patterns = new Map(
-    names.map((name) => [name, new RegExp(`<${name}[\\s>/]`, "g")]),
+    names.map((name) => [
+      name,
+      new RegExp(`<${escapeRegExp(name)}[\\s>/]`, "g"),
+    ]),
   );
   for (const component of components) {
     const text = component.examples
