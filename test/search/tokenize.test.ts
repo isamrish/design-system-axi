@@ -7,6 +7,7 @@ describe("tokenize", () => {
     expect(tokenize("ConfirmationDialog")).toEqual(["confirmation", "dialog"]);
     expect(tokenize("Confirm before deleting the repositories")).toEqual([
       "confirm",
+      "before",
       "deleting",
       "repository",
     ]);
