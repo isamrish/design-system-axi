@@ -126,3 +126,7 @@ How the label lines up with correctness (top match strength vs. golden in top 3)
 | Registration 2 | 8           | 1         | 8            | 3          |
 
 `weak` is a reliable warning (3 of 4 weak top matches in registration 2 were misses) but it does not catch most wrong answers: 8 registration-2 misses are still `strong` because an incidental direct word (e.g. "more" in a description) counts as a strong match.
+
+## 2026-09-14 — Registration 3
+
+20 new intents registered in `eval/tasks-3.json` after the find changes above and before any search run on them. They use components and wording not covered by registrations 1–2 or the ad-hoc queries. Registration 3 is measured once and reported as the clean held-out number; no ranking, tokenizer, or synonym change may be justified by its results without registering a new set.

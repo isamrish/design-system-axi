@@ -10,7 +10,7 @@ interface Registration {
   tasks: { id: string; intent: string; golden: string[] }[];
 }
 
-const registrations = ["tasks.json", "tasks-2.json"].map(
+const registrations = ["tasks.json", "tasks-2.json", "tasks-3.json"].map(
   (file) =>
     JSON.parse(
       readFileSync(new URL(`../eval/${file}`, import.meta.url), "utf8"),
@@ -19,7 +19,7 @@ const registrations = ["tasks.json", "tasks-2.json"].map(
 
 describe("eval registrations", () => {
   it("are numbered in order", () => {
-    expect(registrations.map((r) => r.registration)).toEqual([1, 2]);
+    expect(registrations.map((r) => r.registration)).toEqual([1, 2, 3]);
   });
 
   it("each have 20 tasks with golden components and ids unique across registrations", () => {
