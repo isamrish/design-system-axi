@@ -1,5 +1,7 @@
+import { join } from "node:path";
 import { computeAggregates } from "../../src/catalog/aggregates.js";
 import type { Catalog, Component, Prop } from "../../src/catalog/schema.js";
+import { writeCatalog } from "../../src/catalog/store.js";
 
 export function makeProp(overrides: Partial<Prop> & Pick<Prop, "name">): Prop {
   return {
@@ -50,4 +52,11 @@ export function makeCatalog(
     aggregates: computeAggregates(components),
     ...overrides,
   };
+}
+
+export async function writeProjectCatalog(
+  cwd: string,
+  catalog: Catalog,
+): Promise<void> {
+  await writeCatalog(join(cwd, ".design-system-axi", "catalog.json"), catalog);
 }
