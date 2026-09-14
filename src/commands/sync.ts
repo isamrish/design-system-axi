@@ -1,3 +1,4 @@
+import { AxiError } from "axi-sdk-js";
 import { loadPrimer } from "../adapters/primer/load.js";
 import { isUrl } from "../adapters/read-json.js";
 import { loadStorybook } from "../adapters/storybook/load.js";
@@ -14,7 +15,10 @@ import { displayPath } from "../format/text.js";
 import { VERSION } from "../version.js";
 import type { CommandContext } from "./context.js";
 
-export type Loaders = Record<AdapterId, (location: string) => Promise<SourceFragment>>;
+export type Loaders = Record<
+  AdapterId,
+  (location: string) => Promise<SourceFragment>
+>;
 
 export const defaultLoaders: Loaders = {
   storybook: loadStorybook,
@@ -33,7 +37,8 @@ export async function syncCommand(
   loaders: Loaders = defaultLoaders,
 ): Promise<Record<string, unknown>> {
   const { positionals, flags } = parseCommandArgs("sync", args, FLAGS);
-  if (positionals.length > 0) throw validationError(`unexpected argument "${positionals[0]}"`, "sync");
+  if (positionals.length > 0)
+    throw validationError(`unexpected argument "${positionals[0]}"`, "sync");
 
   const config = await resolveSyncConfig(ctx, {
     storybook: stringFlag(flags.storybook),
@@ -48,7 +53,8 @@ export async function syncCommand(
   }
 
   const fragments: SourceFragment[] = [];
-  for (const source of config.sources) fragments.push(await loaders[source.adapter](source.location));
+  for (const source of config.sources)
+    fragments.push(await loaders[source.adapter](source.location));
 
   const { components, skipped } = mergeFragments(fragments);
   const catalog: Catalog = {
@@ -58,7 +64,9 @@ export async function syncCommand(
     designSystem: resolveIdentity(config.designSystem, fragments),
     sources: fragments.map((fragment) => ({
       adapter: fragment.adapter,
-      location: isUrl(fragment.location) ? fragment.location : displayPath(ctx.cwd, fragment.location),
+      location: isUrl(fragment.location)
+        ? fragment.location
+        : displayPath(ctx.cwd, fragment.location),
       entries: fragment.components.length,
     })),
     skippedEntries: skipped,
@@ -66,7 +74,18 @@ export async function syncCommand(
     aggregates: computeAggregates(components),
   };
 
-  const previous = await readCatalog(config.catalogPath).catch(() => undefined);
+  let previous: Catalog | undefined;
+  let catalogWasUnreadable = false;
+  try {
+    previous = await readCatalog(config.catalogPath);
+  } catch (error) {
+    if (error instanceof AxiError && error.code === "CATALOG_INVALID") {
+      catalogWasUnreadable = true;
+    } else {
+      throw error;
+    }
+  }
+
   await writeCatalog(config.catalogPath, catalog);
 
   const ds = catalog.designSystem;
@@ -76,8 +95,13 @@ export async function syncCommand(
     sources: catalog.sources,
     components: components.length,
     skipped_entries: skipped,
-    changes: describeChanges(previous, catalog),
-    help: [`Run \`${BIN}\` for an overview`, `Run \`${BIN} find "<what you are building>"\` to pick components`],
+    changes: catalogWasUnreadable
+      ? "replaced unreadable catalog"
+      : describeChanges(previous, catalog),
+    help: [
+      `Run \`${BIN}\` for an overview`,
+      `Run \`${BIN} find "<what you are building>"\` to pick components`,
+    ],
   };
 }
 
@@ -87,8 +111,16 @@ export function resolveIdentity(
 ): Catalog["designSystem"] {
   const ordered = [...fragments].sort((a, b) => b.priority - a.priority);
   const pick = (field: "name" | "package" | "version"): string =>
-    configured[field] ?? ordered.map((fragment) => fragment.designSystem?.[field]).find((value) => value) ?? "unknown";
-  return { name: pick("name"), package: pick("package"), version: pick("version") };
+    configured[field] ??
+    ordered
+      .map((fragment) => fragment.designSystem?.[field])
+      .find((value) => value) ??
+    "unknown";
+  return {
+    name: pick("name"),
+    package: pick("package"),
+    version: pick("version"),
+  };
 }
 
 function stringFlag(value: string | boolean | undefined): string | undefined {
