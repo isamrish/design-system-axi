@@ -77,3 +77,9 @@ Misses: t05 (sidebar navigation links for settings pages → PageHeader | SplitP
 `pnpm vitest run`: 110/110 tests passing (23 files), including `test/search/rank.test.ts`'s hard-coded scores (unaffected by the stopword revert) and the restored `test/search/tokenize.test.ts` expectation.
 
 **This 17/20 (85%) figure is still an in-sample number** — `pick` and `textarea` were themselves found by looking at t11 and t17, so this run is not evidence of generalization either, only a smaller, more defensible amount of task-derived tuning than the reverted 19/20. The only retrieval number in this log that was not influenced by looking at these 20 tasks' results is the pre-registered baseline: **15/20 (75%)**.
+
+## 2026-09-13 — CI guard
+
+`test/eval-tasks.test.ts` only checks registration integrity (that `eval/tasks.json` has 20 uniquely identified tasks with non-empty intents and golden components, and that every golden name exists in the fixture catalog) — correcting the wording in an earlier entry in this log, which described it loosely alongside retrieval numbers in a way that could be read as a retrieval regression suite. It is not: it never runs `find` or scores retrieval.
+
+CI (`.github/workflows/ci.yml`) now runs `pnpm run eval` as the final step of `build-and-test`, after `build:skill -- --check`. `pnpm run eval` is offline (it syncs from the committed `test/fixtures/primer` fixtures, never the network) and fails the build (`process.exitCode = 1`) when retrieval_top3 drops below the 85% target. Current result: 17/20 (in-sample, per the correction above).

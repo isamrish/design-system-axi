@@ -33,3 +33,4 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run format:check
       - run: pnpm run build:skill -- --check
+      - run: pnpm run eval
