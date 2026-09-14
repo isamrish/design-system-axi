@@ -12,6 +12,9 @@ const PROP_LIMIT = 8;
 const TYPE_LIMIT = 60;
 const DESCRIPTION_LIMIT = 300;
 const EXAMPLE_LIMIT = 600;
+/** Sources list documented props only; say so, so agents check the types before assuming a prop is unsupported. */
+const PROPS_NOTE =
+  "documented props only; inherited props and HTML attributes may be missing";
 
 type Output = Record<string, unknown>;
 
@@ -159,6 +162,7 @@ function propsSection(props: Prop[], full: boolean): Output {
         deprecated: prop.deprecated,
         description: oneLine(prop.description),
       })),
+      props_note: PROPS_NOTE,
     };
   }
   const visible = orderProps(props.filter((prop) => !prop.deprecated));
@@ -171,6 +175,7 @@ function propsSection(props: Prop[], full: boolean): Output {
   };
   if (visible.length > PROP_LIMIT)
     section.props_shown = `${PROP_LIMIT} of ${visible.length}`;
+  section.props_note = PROPS_NOTE;
   return section;
 }
 

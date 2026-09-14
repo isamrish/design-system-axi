@@ -25,6 +25,11 @@ describe("cli skeleton", () => {
     expect(result.out).toContain("match: strong when");
   });
 
+  it("explains the props list limits in component help", async () => {
+    const result = await runCli(["component", "--help"]);
+    expect(result.out).toContain("inherited props and HTML attributes");
+  });
+
   it("rejects unknown commands", async () => {
     const result = await runCli(["nope"]);
     expect(result.out).toContain("code: VALIDATION_ERROR");

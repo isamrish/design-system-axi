@@ -20,6 +20,7 @@ flags:
 `,
   component: `usage: design-system-axi component <Name> [--id] [--full]
 Shows status, import, props, an example, subcomponents, and related components. Accepts Parent.Sub for subcomponents.
+Props are the documented props from the sources; inherited props and HTML attributes may be missing, so check the component's types before assuming a prop is unsupported.
 flags:
   --id     treat the argument as a component id (to reach duplicates such as a deprecated Dialog)
   --full   show every prop with descriptions and every example

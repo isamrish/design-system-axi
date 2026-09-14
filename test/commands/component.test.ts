@@ -96,6 +96,8 @@ describe("componentCommand", () => {
         { name: "loading", type: "boolean", default: "" },
       ],
       props_shown: "8 of 9",
+      props_note:
+        "documented props only; inherited props and HTML attributes may be missing",
       example: "<Button>Go</Button>",
       examples_total: 2,
       subcomponents: ["Button.Counter"],
@@ -113,6 +115,9 @@ describe("componentCommand", () => {
       await project(),
     );
     expect(output.props).toHaveLength(10);
+    expect(output.props_note).toBe(
+      "documented props only; inherited props and HTML attributes may be missing",
+    );
     expect(output.props).toContainEqual({
       name: "sx",
       type: "SxProp",
@@ -164,6 +169,8 @@ describe("componentCommand", () => {
         status: "alpha",
         import: 'import { Button } from "@acme/ui";',
         props: [{ name: "count", type: "number", default: "" }],
+        props_note:
+          "documented props only; inherited props and HTML attributes may be missing",
         help: [
           "Run `design-system-axi component Button` for the parent component",
         ],
