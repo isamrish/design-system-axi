@@ -14,7 +14,7 @@ const GROUPS: string[][] = [
   ["tab", "tabs", "underline", "segment"],
   ["navigation", "nav", "sidebar", "menu", "link"],
   ["input", "field", "textbox", "text", "form", "textarea"],
-  ["toggle", "switch", "checkbox", "on", "off"],
+  ["toggle", "switch", "checkbox", "off"],
   ["tooltip", "hint", "help", "hover"],
   ["empty", "blankslate", "zero", "none", "placeholder"],
   ["avatar", "profile", "picture", "photo"],

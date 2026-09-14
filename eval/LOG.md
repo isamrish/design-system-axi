@@ -83,3 +83,9 @@ Misses: t05 (sidebar navigation links for settings pages → PageHeader | SplitP
 `test/eval-tasks.test.ts` only checks registration integrity (that `eval/tasks.json` has 20 uniquely identified tasks with non-empty intents and golden components, and that every golden name exists in the fixture catalog) — correcting the wording in an earlier entry in this log, which described it loosely alongside retrieval numbers in a way that could be read as a retrieval regression suite. It is not: it never runs `find` or scores retrieval.
 
 CI (`.github/workflows/ci.yml`) now runs `pnpm run eval` as the final step of `build-and-test`, after `build:skill -- --check`. `pnpm run eval` is offline (it syncs from the committed `test/fixtures/primer` fixtures, never the network) and fails the build (`process.exitCode = 1`) when retrieval_top3 drops below the 85% target. Current result: 17/20 (in-sample, per the correction above).
+
+## 2026-09-13 — Remove unreachable synonym
+
+Change: removed `"on"` from the `["toggle", "switch", "checkbox", "on", "off"]` group in `src/search/synonyms.ts` (now `["toggle", "switch", "checkbox", "off"]`). `"on"` is also listed in `STOPWORDS` in `src/search/tokenize.ts`, and `tokenize` filters stopwords out before any token reaches the synonym lookup, so `synonymsOf("on")` was dead code — no query could ever produce the token `"on"` for the synonym index to expand. Removing it does not change matching behavior for any reachable query; `"off"` stays since it is not a stopword.
+
+Before → after retrieval: `pnpm run eval` gave 17/20 (85%) both before and after this change (identical hits: t01-t04, t06-t11, t14-t20; misses: t05, t12, t13, unchanged). `pnpm vitest run` (119/119, including `test/search`) passes unchanged.
