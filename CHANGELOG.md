@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.3...design-system-axi-v0.1.4) (2026-09-14)
+
+
+### Bug Fixes
+
+* add size hints to truncated component and find output ([#10](https://github.com/isamrish/design-system-axi/issues/10)) ([e7d7f40](https://github.com/isamrish/design-system-axi/commit/e7d7f40b133f362dd226f73bbb41853b40af8c69))
+
 ## [0.1.3](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.2...design-system-axi-v0.1.3) (2026-09-14)
 
 
