@@ -130,3 +130,11 @@ How the label lines up with correctness (top match strength vs. golden in top 3)
 ## 2026-09-14 — Registration 3
 
 20 new intents registered in `eval/tasks-3.json` after the find changes above and before any search run on them. They use components and wording not covered by registrations 1–2 or the ad-hoc queries. Registration 3 is measured once and reported as the clean held-out number; no ranking, tokenizer, or synonym change may be justified by its results without registering a new set.
+
+## 2026-09-14 — Registration 3 result (measured once)
+
+retrieval_top3: **11/20 (55%)** · avg_tokens_per_task 382 · raw_manifest_tokens 608464.
+Misses: r3-01 Token, r3-02 LabelGroup, r3-03 CircleBadge, r3-05 Header, r3-06 SubNav, r3-07 Portal, r3-09 Text, r3-10 Card, r3-15 LinkButton.
+Top match strength: 9 hits strong, 2 hits weak (r3-18, r3-20); 6 misses strong, 3 misses weak (r3-01, r3-07, r3-09).
+
+Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registration 2 45% (held-out before these changes, 50% at its baseline); clean held-out registration 3 55%. Keyword ranking finds components whose names or descriptions share the user's words and misses paraphrases (e.g. "pill" → Token, "top bar" → Header, "bordered container" → Card). Treat `find` as a shortlist and confirm with `component`.
