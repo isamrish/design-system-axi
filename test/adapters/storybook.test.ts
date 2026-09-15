@@ -78,6 +78,16 @@ const manifest = {
   },
 };
 
+/** One-entry manifest for a single translation rule. */
+function entry(fields: Record<string, unknown>) {
+  return {
+    v: 0,
+    components: {
+      [fields.id as string]: { jsDocTags: {}, stories: [], ...fields },
+    },
+  };
+}
+
 describe('translateStorybook', () => {
   it('maps entries to fragment components', () => {
     const fragment = translateStorybook(manifest, 'https://storybook.acme.dev');
@@ -176,6 +186,86 @@ describe('translateStorybook', () => {
     expect(importedNames(undefined)).toEqual([]);
   });
 
+  it('reads named imports from every statement, not just the first', () => {
+    expect(
+      importedNames(
+        'import { Icon } from "@acme/ui";\nimport { Toggle } from "@acme/forms";',
+      ),
+    ).toEqual(['Icon', 'Toggle']);
+  });
+
+  it('keeps only the statement that imports the component', () => {
+    const fragment = translateStorybook(
+      entry({
+        id: 'components-toggle',
+        name: 'Toggle',
+        import:
+          'import { Icon } from "@acme/ui";\nimport { Toggle } from "@acme/forms";',
+      }),
+      'x',
+    );
+    expect(fragment.components[0]).toMatchObject({
+      name: 'Toggle',
+      isComponent: true,
+      import: 'import { Toggle } from "@acme/forms";',
+    });
+  });
+
+  it('names a compound entry after its root and imports that root', () => {
+    const fragment = translateStorybook(
+      entry({
+        id: 'components-tabs',
+        name: 'Tabs.Root',
+        import: 'import { List, Root, Tab } from "@acme/ui";',
+        reactDocgen: {
+          props: {
+            defaultValue: { required: false, tsType: { name: 'string' } },
+          },
+        },
+        subcomponents: { 'Tabs.List': {}, 'Tabs.Tab': {} },
+      }),
+      'x',
+    );
+    expect(fragment.components[0]).toMatchObject({
+      name: 'Tabs',
+      isComponent: true,
+      import: 'import { Tabs } from "@acme/ui";',
+      props: [],
+    });
+    expect(fragment.components[0]?.subcomponents).toEqual([
+      {
+        name: 'Tabs.Root',
+        props: [
+          {
+            name: 'defaultValue',
+            type: 'string',
+            required: false,
+            default: '',
+            description: '',
+            deprecated: false,
+          },
+        ],
+      },
+      { name: 'Tabs.List', props: [] },
+      { name: 'Tabs.Tab', props: [] },
+    ]);
+  });
+
+  it('qualifies a subcomponent name exactly once', () => {
+    const fragment = translateStorybook(
+      entry({
+        id: 'components-subnav',
+        name: 'SubNav',
+        import: 'import { SubNav } from "@acme/ui";',
+        subcomponents: { 'SubNav.Link': {}, Item: {} },
+      }),
+      'x',
+    );
+    expect(fragment.components[0]?.subcomponents?.map(sub => sub.name)).toEqual(
+      ['SubNav.Link', 'SubNav.Item'],
+    );
+  });
+
   it('rejects drifted shapes with MANIFEST_SHAPE', () => {
     expect(() =>
       translateStorybook({ v: 0, components: [] }, 'x'),
@@ -227,6 +317,34 @@ describe('loadStorybook', () => {
       suggestions: [
         'Point --storybook at a Storybook >= 10 URL or build directory with features.componentsManifest enabled',
       ],
+    });
+  });
+
+  it('translates the real WordPress manifest, compound entries included', async () => {
+    const fragment = await loadStorybook(
+      fileURLToPath(
+        new URL('../fixtures/wordpress/storybook', import.meta.url),
+      ),
+    );
+    expect(fragment.components).toHaveLength(6);
+    expect(fragment.components.every(c => c.isComponent)).toBe(true);
+    expect(
+      fragment.components.find(c => c.key === 'design-system-components-tabs'),
+    ).toMatchObject({
+      name: 'Tabs',
+      import: 'import { Tabs } from "@wordpress/ui";',
+      props: [],
+    });
+    expect(
+      fragment.components
+        .find(c => c.key === 'design-system-components-tabs')
+        ?.subcomponents?.map(sub => sub.name),
+    ).toEqual(['Tabs.Root', 'Tabs.List', 'Tabs.Tab', 'Tabs.Panel']);
+    expect(
+      fragment.components.find(c => c.key === 'components-togglecontrol'),
+    ).toMatchObject({
+      name: 'ToggleControl',
+      import: 'import { ToggleControl } from "@wordpress/components";',
     });
   });
 

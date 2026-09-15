@@ -122,9 +122,17 @@ function describeComponent(
   }
 
   const help: string[] = [];
-  if (!full)
+  // A compound component carries its props on subcomponents, so an empty list
+  // is normal; offering `--full` for it would promise nothing.
+  const lists = [
+    [component.props.length, 'props'],
+    [component.examples.length, 'examples'],
+  ]
+    .filter(([count]) => count !== 0)
+    .map(([count, label]) => `${count} ${label}`);
+  if (!full && lists.length > 0)
     help.push(
-      `Run \`${BIN} component ${ref} --full\` for all ${component.props.length} props and ${component.examples.length} examples`,
+      `Run \`${BIN} component ${ref} --full\` for all ${lists.join(' and ')}`,
     );
   const firstSub = component.subcomponents[0];
   if (firstSub)

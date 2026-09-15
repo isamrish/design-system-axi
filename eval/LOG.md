@@ -138,3 +138,7 @@ Misses: r3-01 Token, r3-02 LabelGroup, r3-03 CircleBadge, r3-05 Header, r3-06 Su
 Top match strength: 9 hits strong, 2 hits weak (r3-18, r3-20); 6 misses strong, 3 misses weak (r3-01, r3-07, r3-09).
 
 Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registration 2 45% (held-out before these changes, 50% at its baseline); clean held-out registration 3 55%. Keyword ranking finds components whose names or descriptions share the user's words and misses paraphrases (e.g. "pill" → Token, "top bar" → Header, "bordered container" → Card). Treat `find` as a shortlist and confirm with `component`.
+
+## 2026-09-15 — Compound components (no ranking change)
+
+`src/adapters/storybook/translate.ts` now catalogues compound entries (`Tabs.Root` -> `Tabs`), reads every import statement, and qualifies subcomponent names once. This changes catalog content, not ranking, but `subcomponent` is a weighted field, so the suite was measured before and after: registration 1 18/20 (90%), registration 2 9/20 (45%), registration 3 11/20 (55%) — identical to the 2026-09-14 numbers. Primer's catalog is unchanged apart from `SubNav.SubNav.Link` becoming `SubNav.Link`, which no registered intent matches.
