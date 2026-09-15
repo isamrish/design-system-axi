@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.4...design-system-axi-v0.1.5) (2026-09-15)
+
+
+### Bug Fixes
+
+* catalog compound components instead of skipping them ([#12](https://github.com/isamrish/design-system-axi/issues/12)) ([97e5a6d](https://github.com/isamrish/design-system-axi/commit/97e5a6df9d4cc92fc4fe8cdad92170c4ca789474))
+
 ## [0.1.4](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.3...design-system-axi-v0.1.4) (2026-09-14)
 
 
