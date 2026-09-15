@@ -55,31 +55,43 @@ export function translateStorybook(
   const components = Object.values(manifest.components).map(
     (entry): FragmentComponent => {
       const deprecation = deprecationNote(entry.jsDocTags);
+      // A compound entry such as `Tabs.Root` is catalogued as `Tabs`, with the
+      // entry itself as the first subcomponent, because that is the name the
+      // design system exports and an agent asks for.
+      const [root = entry.name, ...parts] = entry.name.split('.');
+      const compound = parts.length > 0;
+      const statement = importing(entry.import, compound ? parts.at(-1) : root);
+      const props = toProps(
+        entry.reactDocgen?.props ?? entry.reactDocgenTypescript?.props,
+      );
+      const qualify = (key: string) =>
+        key.startsWith(`${root}.`) ? key : `${root}.${key}`;
       return {
         key: entry.id,
-        name: entry.name,
-        isComponent:
-          /^[A-Z]/.test(entry.name) &&
-          importedNames(entry.import).includes(entry.name),
+        name: root,
+        isComponent: /^[A-Z]/.test(root) && statement !== undefined,
         storyIds: entry.stories.map(story => story.id),
-        import: entry.import ?? '',
+        import: compound
+          ? statement
+            ? `import { ${root} } from ${quoted(statement)};`
+            : ''
+          : (statement ?? entry.import ?? ''),
         description: (
           entry.description ??
           entry.reactDocgen?.description ??
           ''
         ).trim(),
         ...(deprecation ? { status: 'deprecated' as const, deprecation } : {}),
-        props: toProps(
-          entry.reactDocgen?.props ?? entry.reactDocgenTypescript?.props,
-        ),
-        subcomponents: Object.entries(entry.subcomponents ?? {}).map(
-          ([key, sub]) => ({
-            name: `${entry.name}.${key}`,
+        props: compound ? [] : props,
+        subcomponents: [
+          ...(compound ? [{ name: entry.name, props }] : []),
+          ...Object.entries(entry.subcomponents ?? {}).map(([key, sub]) => ({
+            name: qualify(key),
             props: toProps(
               sub.reactDocgen?.props ?? sub.reactDocgenTypescript?.props,
             ),
-          }),
-        ),
+          })),
+        ],
         examples: entry.stories.map(story => ({
           id: story.id,
           name: story.name,
@@ -97,13 +109,40 @@ export function translateStorybook(
   };
 }
 
+/** Named imports across every `import { … } from '…'` statement. */
 export function importedNames(statement: string | undefined): string[] {
-  const match = statement?.match(/import\s*\{([^}]*)\}/);
-  if (!match?.[1]) return [];
-  return match[1]
-    .split(',')
-    .map(part => part.trim().split(/\s+as\s+/)[0] ?? '')
-    .filter(name => name.length > 0);
+  return statements(statement).flatMap(({ names }) => names);
+}
+
+/** The one statement that imports `name`, verbatim, or undefined. */
+function importing(
+  statement: string | undefined,
+  name: string | undefined,
+): string | undefined {
+  if (name === undefined) return undefined;
+  return statements(statement).find(({ names }) => names.includes(name))?.text;
+}
+
+const IMPORT_SOURCE = /import\s*\{([^}]*)\}\s*from\s*(['"])([^'"]+)\2\s*;?/;
+
+function statements(
+  statement: string | undefined,
+): { text: string; names: string[] }[] {
+  return [...(statement ?? '').matchAll(new RegExp(IMPORT_SOURCE, 'g'))].map(
+    match => ({
+      text: match[0],
+      names: (match[1] ?? '')
+        .split(',')
+        .map(part => part.trim().split(/\s+as\s+/)[0] ?? '')
+        .filter(name => name.length > 0),
+    }),
+  );
+}
+
+/** The module specifier of an import statement, with its original quotes. */
+function quoted(statement: string): string {
+  const match = IMPORT_SOURCE.exec(statement);
+  return match ? `${match[2]}${match[3]}${match[2]}` : '""';
 }
 
 function toProps(raw: Record<string, unknown> | undefined): Prop[] {

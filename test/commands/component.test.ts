@@ -64,9 +64,9 @@ const legacyDialog = makeComponent({
 });
 const dialog = makeComponent({ id: 'dialog_v2', name: 'Dialog' });
 
-async function project() {
+async function project(components = [button, legacyDialog, dialog]) {
   const cwd = tmpDir();
-  await writeProjectCatalog(cwd, makeCatalog([button, legacyDialog, dialog]));
+  await writeProjectCatalog(cwd, makeCatalog(components));
   return { cwd, env: {}, now };
 }
 
@@ -156,8 +156,27 @@ describe('componentCommand', () => {
       deprecated: 'Use Dialog from @acme/ui.',
     });
     expect(output.help).toEqual([
-      'Run `design-system-axi component dialog --id --full` for all 0 props and 0 examples',
       'Run `design-system-axi find "<what you are building>"` for a current alternative',
+    ]);
+  });
+
+  it('offers --full only for the lists that have something to show', async () => {
+    const ctx = await project([
+      makeComponent({
+        id: 'tabs',
+        name: 'Tabs',
+        subcomponents: [
+          { name: 'Tabs.Root', props: [makeProp({ name: 'x' })] },
+        ],
+        examples: [
+          { id: 'tabs--default', name: 'Default', snippet: '<Tabs.Root />' },
+          { id: 'tabs--vertical', name: 'Vertical', snippet: '<Tabs.Root />' },
+        ],
+      }),
+    ]);
+    expect((await componentCommand(['Tabs'], ctx)).help).toEqual([
+      'Run `design-system-axi component Tabs --full` for all 2 examples',
+      'Run `design-system-axi component Tabs.Root` for subcomponent props',
     ]);
   });
 
