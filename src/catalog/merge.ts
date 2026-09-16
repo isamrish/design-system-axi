@@ -16,7 +16,8 @@ interface Group {
 
 export interface MergeResult {
   components: Component[];
-  skipped: number;
+  /** Adapter keys of entries that are not components and joined no component. */
+  skipped: string[];
 }
 
 const RELATED_LIMIT = 5;
@@ -29,7 +30,7 @@ export function mergeFragments(fragments: SourceFragment[]): MergeResult {
   const ordered = [...fragments].sort((a, b) => b.priority - a.priority);
   const groups: Group[] = [];
   const byStory = new Map<string, Group>();
-  let skipped = 0;
+  const skipped: string[] = [];
 
   const attach = (
     group: Group,
@@ -73,7 +74,7 @@ export function mergeFragments(fragments: SourceFragment[]): MergeResult {
         continue;
       }
       if (!entry.isComponent) {
-        skipped += 1;
+        skipped.push(entry.key);
         continue;
       }
       const created: Group = { members: [] };
@@ -88,7 +89,7 @@ export function mergeFragments(fragments: SourceFragment[]): MergeResult {
   components.sort(
     (a, b) => compareStrings(a.name, b.name) || compareStrings(a.id, b.id),
   );
-  return { components, skipped };
+  return { components, skipped: skipped.sort(compareStrings) };
 }
 
 function storyMatch(
