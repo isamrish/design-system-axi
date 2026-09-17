@@ -177,3 +177,30 @@ Findings: an agent choosing from the plain listing found a correct component for
 Confounds: both design systems use descriptive component names; the model has likely seen Primer and WordPress in training; one run per arm; the author wrote both registrations; both catalogs list 100 or fewer current components, so the whole listing fits in one default `components` call, and nothing here says how agents do with a truncated or much longer listing.
 
 Decisions: agent guidance leads with `components` when the current components fit in one default listing, and keeps `find` as a keyword shortlist (and the lead for larger catalogs). `components --about` is not merged. `find`'s ranking is unchanged, and registrations 1-4 keep their numbers.
+
+## 2026-09-17 — Live agent tests: guidance, and the CLI against no CLI
+
+Agents built UI in real app directories with shell access, and a wrapper logged every CLI call. Method, prompts, outputs, call logs, expected answers (written before any run), and a scorer are in [`experiments/2026-09-17-live-agents/`](experiments/2026-09-17-live-agents/). All runs used Claude Sonnet.
+
+**Guidance.** The unmerged guidance branch tells agents to choose from `components` before writing UI; released 0.1.6 tells them to run `find` first.
+
+| test                                   | runs per arm | opened with the `components` listing: branch / released | correct components: branch / released |
+| -------------------------------------- | ------------ | ------------------------------------------------------- | ------------------------------------- |
+| Primer (`@primer/react`, type-checked) | 1            | 0/1 / 0/1                                               | 5/5 / 5/5                             |
+| Gutenberg (packages not installed)     | 3            | 2/3 / 0/3                                               | 15/15 / 15/15                         |
+
+The guidance shifts the first step some of the time, but agents who listed first still ran `find` five times, and every run in both arms got every component right, with similar tool calls and tokens. It changes behaviour without changing outcomes, so the guidance branch is not merged. Together with the agent-choice entry above: agents can choose well from the listing, but in practice they search iteratively, rephrase, and confirm with `component` (12-18 lookups per run here), which is why `find`'s one-shot retrieval (55-60%) understates how the CLI performs in use.
+
+**The CLI against no CLI (Gutenberg).** The expected components are the design system's current `@wordpress/ui` components. Several have well-known classic counterparts in `@wordpress/components` that the design system's Storybook does not document (`PanelBody`, `Placeholder`, `TextControl`), and those still ship, so runs are scored two ways: **strict** (the current component) and **valid** (any exported component that serves the item, from the right package). Imports were checked against what the published packages actually export.
+
+| condition (3 runs each)                    | strict | valid | files importing names the packages don't export                                                          | avg tool calls, tokens, time |
+| ------------------------------------------ | ------ | ----- | -------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| With the CLI (branch and released, 6 runs) | 30/30  | 30/30 | 0 of 6                                                                                                   | 13, 93k, 2.1 min             |
+| No CLI, packages not installed             | 2/15   | 11/15 | 2 of 3 (`HStack`/`VStack`/`Heading`, exported only as `__experimental*`; `Badge` from the wrong package) | 4, 80k, 2.5 min              |
+| No CLI, packages installed                 | 11/15  | 14/15 | 0 of 3                                                                                                   | 30, 108k, 4.0 min            |
+
+Without the CLI, agents answered from memory with classic components, and two of three files would not build. With the packages installed they could find the current components by reading `node_modules`, reaching 11/15 at about twice the tool calls and time of the CLI runs (one run took 50 tool calls and 6 minutes); two of three still used the older `TextControl`. With the CLI, all six runs used the documented current components from the right package on 13 calls on average.
+
+Limits: one model; 1-3 runs per condition; the task prompt told CLI runs to use the CLI; CLI runs had no packages installed, so they could not type-check, and the catalog came from Gutenberg's Storybook trunk snapshot rather than the published package versions; the author wrote the tasks and expected answers (before any run).
+
+Decisions: neither `components --about` nor the components-first guidance is merged. The measured value of the CLI is in grounding choices and imports in the design system's documented components, not in `find`'s ranking alone.
