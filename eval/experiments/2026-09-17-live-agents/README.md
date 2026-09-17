@@ -37,3 +37,7 @@ published packages export (`published-exports.json`) that serves the item, impor
 exports it; it also lists imported names the packages do not export.
 
 `outputs/` holds each agent's file verbatim.
+
+## Primer, CLI against no CLI (`primer-cli-comparison/`, 3 runs per arm)
+
+Added after the Gutenberg runs to check the CLI's effect on a design system the model knows well; see that folder's README.
