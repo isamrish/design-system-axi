@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.6](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.5...design-system-axi-v0.1.6) (2026-09-17)
+
+
+### Features
+
+* name the entries sync skipped ([#14](https://github.com/isamrish/design-system-axi/issues/14)) ([c92f461](https://github.com/isamrish/design-system-axi/commit/c92f4610bdcde3ab5e39b07f45956365f1e77fb1))
+
+
+### Bug Fixes
+
+* keep deprecated stories off current components ([#16](https://github.com/isamrish/design-system-axi/issues/16)) ([ef9efb3](https://github.com/isamrish/design-system-axi/commit/ef9efb374decfc01d127c5be477d9e09ec2d7056))
+
 ## [0.1.5](https://github.com/isamrish/design-system-axi/compare/design-system-axi-v0.1.4...design-system-axi-v0.1.5) (2026-09-15)
 
 
