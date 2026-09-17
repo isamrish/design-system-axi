@@ -142,3 +142,11 @@ Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registrat
 ## 2026-09-15 — Compound components (no ranking change)
 
 `src/adapters/storybook/translate.ts` now catalogues compound entries (`Tabs.Root` -> `Tabs`), reads every import statement, and qualifies subcomponent names once. This changes catalog content, not ranking, but `subcomponent` is a weighted field, so the suite was measured before and after: registration 1 18/20 (90%), registration 2 9/20 (45%), registration 3 11/20 (55%) — identical to the 2026-09-14 numbers. Primer's catalog is unchanged apart from `SubNav.SubNav.Link` becoming `SubNav.Link`, which no registered intent matches.
+
+## 2026-09-16 — Deprecated sidebar entries kept off current components (no ranking change)
+
+`Deprecated/` Storybook entries now carry `status: deprecated` and join a current component only through a published story id; by prefix or name they join only a deprecated one. This removed 19 examples that had been attached to current components from their deprecated APIs (ActionList 11, ActionMenu 7, Dialog 1), and gave the current Dialog its playground story, which a shared story id had handed to the deprecated Dialog. Ranking code is untouched, but the corpus changed.
+
+Before → after: registration 1 18/20 (90%) → **17/20 (85%)**; registration 2 9/20 (45%) → 9/20 (45%); registration 3 11/20 (55%) → 11/20 (55%).
+
+The one flip is t11 ("pick several labels from a searchable list", golden SelectPanel). SelectPanel's own entry is unchanged; collection statistics shifted when the misattached stories left, its score went 0.730 → 0.720, tying NavList, and it lost the name tie-break to fourth. It was already a `weak` match holding third by 0.01. No synonym or weight was changed to recover it. Registration 1 now sits exactly on the 85% gate.

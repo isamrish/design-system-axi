@@ -210,6 +210,105 @@ describe('mergeFragments', () => {
     ]);
   });
 
+  it('keeps a deprecated entry off a current component unless a story id links them', () => {
+    const deprecated = (key: string, name: string, isComponent = true) =>
+      entry({
+        key,
+        name,
+        isComponent,
+        status: 'deprecated',
+        storyIds: [`${key}--default`],
+        examples: [{ id: `${key}--default`, name: 'Default', snippet: '' }],
+      });
+    const result = mergeFragments([
+      primer([
+        entry({
+          key: 'dialog',
+          name: 'Dialog',
+          status: 'deprecated',
+          storyIds: ['deprecated-dialog--default'],
+        }),
+        entry({ key: 'dialog_v2', name: 'Dialog', status: 'alpha' }),
+        entry({ key: 'action_list', name: 'ActionList', status: 'beta' }),
+        entry({
+          key: 'select_panel_v1',
+          name: 'SelectPanel',
+          status: 'deprecated',
+          storyIds: ['deprecated-components-selectpanel--default'],
+        }),
+      ]),
+      storybook([
+        // joins the deprecated Dialog by name, not the current one
+        deprecated('deprecated-components-dialogv1', 'Dialog'),
+        // an old API of a current component: skipped, never attached
+        deprecated('deprecated-components-actionlist', 'ActionList', false),
+        deprecated('deprecated-components-actionmenu', 'ActionMenu'),
+        entry({ key: 'components-actionmenu', name: 'ActionMenu' }),
+        // linked by a published story id: joins as before
+        deprecated('deprecated-components-selectpanel', 'SelectPanel'),
+        // no current counterpart: becomes a deprecated component
+        deprecated('deprecated-components-pagehead', 'Pagehead'),
+      ]),
+    ]);
+    const byId = (id: string) => result.components.find(c => c.id === id);
+    expect(byId('dialog')?.examples.map(e => e.id)).toEqual([
+      'deprecated-components-dialogv1--default',
+    ]);
+    expect(byId('dialog_v2')?.examples).toEqual([]);
+    expect(byId('action_list')?.examples).toEqual([]);
+    expect(byId('select_panel_v1')?.examples.map(e => e.id)).toEqual([
+      'deprecated-components-selectpanel--default',
+    ]);
+    expect(
+      result.components.filter(c => c.name === 'ActionMenu').map(c => c.status),
+    ).toEqual(['unknown']);
+    expect(byId('deprecated-components-pagehead')?.status).toBe('deprecated');
+    expect(result.skipped).toEqual([
+      'deprecated-components-actionlist',
+      'deprecated-components-actionmenu',
+    ]);
+  });
+
+  it('gives a story claimed by a deprecated and a current component to the current one', () => {
+    const result = mergeFragments([
+      primer([
+        entry({
+          key: 'dialog',
+          name: 'Dialog',
+          status: 'deprecated',
+          storyIds: ['components-dialog--default'],
+        }),
+        entry({
+          key: 'dialog_v2',
+          name: 'Dialog',
+          status: 'alpha',
+          storyIds: ['components-dialog--default'],
+        }),
+      ]),
+      storybook([
+        entry({
+          key: 'components-dialog',
+          name: 'Dialog',
+          storyIds: [
+            'components-dialog--default',
+            'components-dialog--playground',
+          ],
+          examples: [
+            {
+              id: 'components-dialog--playground',
+              name: 'Playground',
+              snippet: '',
+            },
+          ],
+        }),
+      ]),
+    ]);
+    const examples = (id: string) =>
+      result.components.find(c => c.id === id)?.examples.map(e => e.id);
+    expect(examples('dialog_v2')).toEqual(['components-dialog--playground']);
+    expect(examples('dialog')).toEqual([]);
+  });
+
   it('never merges two entries of a distinct-entries fragment', () => {
     const result = mergeFragments([
       primer([
@@ -288,6 +387,8 @@ describe('mergeFragments on real Primer data', () => {
     expect(components).toHaveLength(86);
     expect(skipped).toEqual([
       'components-skeleton-examples',
+      'deprecated-components-actionlist',
+      'deprecated-components-actionmenu',
       'experimental-components-csscomponent',
       'hooks-useanchoredposition',
       'hooks-usefocustrap',
@@ -315,5 +416,11 @@ describe('mergeFragments on real Primer data', () => {
     expect(confirmation?.related).toContain('Button');
     const button = components.find(c => c.id === 'button');
     expect(button?.examples.every(e => e.name.length > 0)).toBe(true);
+    expect(
+      components
+        .filter(c => c.status !== 'deprecated')
+        .flatMap(c => c.examples.map(e => e.id))
+        .filter(id => id.startsWith('deprecated-')),
+    ).toEqual([]);
   });
 });

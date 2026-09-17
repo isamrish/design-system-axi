@@ -251,6 +251,42 @@ describe('translateStorybook', () => {
     ]);
   });
 
+  it('reads deprecation from a Deprecated/ sidebar section without inventing a reason', () => {
+    const [sidebar] = translateStorybook(
+      entry({
+        id: 'deprecated-components-pagehead',
+        name: 'Pagehead',
+        import: 'import { Pagehead } from "@acme/ui";',
+      }),
+      'x',
+    ).components;
+    expect(sidebar).toMatchObject({ status: 'deprecated', deprecation: '' });
+
+    const [tagged] = translateStorybook(
+      entry({
+        id: 'deprecated-components-flash',
+        name: 'Flash',
+        import: 'import { Flash } from "@acme/ui";',
+        jsDocTags: { deprecated: ['Use `Banner` instead.'] },
+      }),
+      'x',
+    ).components;
+    expect(tagged).toMatchObject({
+      status: 'deprecated',
+      deprecation: 'Use `Banner` instead.',
+    });
+
+    const [current] = translateStorybook(
+      entry({
+        id: 'components-deprecatedbadge',
+        name: 'DeprecatedBadge',
+        import: 'import { DeprecatedBadge } from "@acme/ui";',
+      }),
+      'x',
+    ).components;
+    expect(current).not.toHaveProperty('status');
+  });
+
   it('qualifies a subcomponent name exactly once', () => {
     const fragment = translateStorybook(
       entry({
