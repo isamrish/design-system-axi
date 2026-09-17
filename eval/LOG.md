@@ -150,3 +150,60 @@ Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registrat
 Before → after: registration 1 18/20 (90%) → **17/20 (85%)**; registration 2 9/20 (45%) → 9/20 (45%); registration 3 11/20 (55%) → 11/20 (55%).
 
 The one flip is t11 ("pick several labels from a searchable list", golden SelectPanel). SelectPanel's own entry is unchanged; collection statistics shifted when the misattached stories left, its score went 0.730 → 0.720, tying NavList, and it lost the name tie-break to fourth. It was already a `weak` match holding third by 0.01. No synonym or weight was changed to recover it. Registration 1 now sits exactly on the 85% gate.
+
+## 2026-09-17 — Registration 4 (WordPress Gutenberg) result (measured once)
+
+retrieval_top3: **12/20 (60%)** · avg_tokens_per_task 437 · raw_manifest_tokens 555461 · design system `wordpress-gutenberg-storybook@2026-09-16` (Storybook manifest only, no curated metadata).
+Misses: g02 InputControl, g03 TextareaControl, g04 InputControl, g05 RangeControl, g10 Snackbar, g12 ToggleGroupControl, g17 EmptyState, g19 RadioControl.
+Top match strength: 10 hits strong, 2 hits weak (g09, g16); 6 misses strong, 2 misses weak (g02, g04).
+
+This is the first measurement of `find` outside Primer. 60% against Primer's clean held-out 55% says the keyword ranking was not quietly fitted to Primer's vocabulary; with 20 tasks per set the two are indistinguishable, so read it as "about the same", not "better". The author had seen Gutenberg's component list (see the registration note), which if anything favours this number.
+
+The misses have the same cause as Primer's: paraphrase. "slider" never reaches RangeControl, "brief popup" never reaches Snackbar, "no results" never reaches EmptyState, "visibility" never reaches RadioControl. Two further patterns showed in the `why` evidence: synonym expansions written for Primer misfire here ("page" → "pagination" pulls in DataViews; "title" → "layout" pulls in InputLayout), and domain words that recur across Gutenberg descriptions ("post", "search") lift large multipurpose components such as DataViews and Snackbar. `weak` flagged 2 of 8 misses, less than on Primer. None of this justifies a ranking, tokenizer, or synonym change without registering a new set first.
+
+## 2026-09-17 — Agent choice from the components listing (outside CI)
+
+Question: does an agent choose components better from a listing than `find` ranks them, and does a one-line summary per component (`components --about`, built on an unmerged branch) help? Measured once on registrations 3 (Primer) and 4 (Gutenberg); inputs, prompt, raw answers, and scorer are in [`experiments/2026-09-17-agent-choice/`](experiments/2026-09-17-agent-choice/).
+
+Method: four arms, each a separate Claude Sonnet agent with no tools, given only a pasted listing and the registration's 20 intents, asked for up to three component names per intent. Names-only arms got `components` output; summary arms got `components --about` output. Primer listings append the deprecated listing, because three registration 3 golden components are deprecated. A name counts only if it is in the arm's listing; no agent named one that was not.
+
+|                            | `find` top 3 | agent, names only: top 3 / first pick | agent, with summaries: top 3 / first pick |
+| -------------------------- | ------------ | ------------------------------------- | ----------------------------------------- |
+| Primer (registration 3)    | 11/20        | 20/20 / 19/20                         | 20/20 / 19/20                             |
+| Gutenberg (registration 4) | 12/20        | 20/20 / 20/20                         | 20/20 / 18/20                             |
+
+Findings: an agent choosing from the plain listing found a correct component for all 40 tasks, against 23 for `find`. Summaries added nothing measurable: both arms hit the top-3 ceiling, and Gutenberg's first picks were two lower with them (g04 went to UnitControl, whose summary is cut at "(e.g."; g19 to ToggleGroupControl), which is noise at this size but no evidence of benefit for about 1.3-1.5k extra tokens.
+
+Confounds: both design systems use descriptive component names; the model has likely seen Primer and WordPress in training; one run per arm; the author wrote both registrations; both catalogs list 100 or fewer current components, so the whole listing fits in one default `components` call, and nothing here says how agents do with a truncated or much longer listing.
+
+Decisions: agent guidance leads with `components` when the current components fit in one default listing, and keeps `find` as a keyword shortlist (and the lead for larger catalogs). `components --about` is not merged. `find`'s ranking is unchanged, and registrations 1-4 keep their numbers.
+
+## 2026-09-17 — Live agent tests: guidance, and the CLI against no CLI
+
+Agents built UI in real app directories with shell access, and a wrapper logged every CLI call. Method, prompts, outputs, call logs, expected answers (written before any run), and a scorer are in [`experiments/2026-09-17-live-agents/`](experiments/2026-09-17-live-agents/). All runs used Claude Sonnet.
+
+**Guidance.** The unmerged guidance branch tells agents to choose from `components` before writing UI; released 0.1.6 tells them to run `find` first.
+
+| test                                   | runs per arm | opened with the `components` listing: branch / released | correct components: branch / released |
+| -------------------------------------- | ------------ | ------------------------------------------------------- | ------------------------------------- |
+| Primer (`@primer/react`, type-checked) | 1            | 0/1 / 0/1                                               | 5/5 / 5/5                             |
+| Gutenberg (packages not installed)     | 3            | 2/3 / 0/3                                               | 15/15 / 15/15                         |
+
+The guidance shifts the first step some of the time, but agents who listed first still ran `find` five times, and every run in both arms got every component right, with similar tool calls and tokens. It changes behaviour without changing outcomes, so the guidance branch is not merged. Together with the agent-choice entry above: agents can choose well from the listing, but in practice they search iteratively, rephrase, and confirm with `component` (12-18 lookups per run here), which is why `find`'s one-shot retrieval (55-60%) understates how the CLI performs in use.
+
+**The CLI against no CLI (Gutenberg).** The expected components are the design system's current `@wordpress/ui` components. Several have well-known classic counterparts in `@wordpress/components` that the design system's Storybook does not document (`PanelBody`, `Placeholder`, `TextControl`), and those still ship, so runs are scored two ways: **strict** (the current documented component) and **valid** (any exported component that serves the item, from the right package). Imports were checked against what the published packages export, and afterwards every output was type-checked against the installed packages (`typecheck.txt`).
+
+| condition                               | strict | valid | files that type-check | tool calls: median (range) | tokens (mean) | time (median) |
+| --------------------------------------- | ------ | ----- | --------------------- | -------------------------- | ------------- | ------------- |
+| No CLI, packages not installed (3 runs) | 2/15   | 11/15 | 0 of 3                | 4 (3-4)                    | 80k           | 2.6 min       |
+| No CLI, packages installed (3 runs)     | 11/15  | 14/15 | 3 of 3                | 21 (18-50)                 | 108k          | 3.3 min       |
+| CLI, packages installed (3 runs)        | 15/15  | 15/15 | 3 of 3                | 16 (13-20)                 | 90k           | 2.7 min       |
+| CLI, packages not installed (6 runs)    | 30/30  | 30/30 | 6 of 6                | 12 (8-22)                  | 93k           | 2.1 min       |
+
+The controlled comparison is the middle pair: the same installed packages, with and without the CLI (the CLI-plus-packages runs were added after the others to separate the two). With the CLI, all 15 choices were the documented current components, against 11 without, at a median of 16 tool calls against 21; every file type-checked either way, and on the valid score they differ by one choice. So where the packages are installed, the measured effect of the CLI is consistency with the design system's documented components and less exploration, not the difference between working and broken code.
+
+Without the packages the gap is larger. Every file written with the CLI type-checked against the published packages, although the catalog came from Gutenberg's Storybook snapshot rather than those versions; all three files written from memory failed (names exported only as `__experimental*`, `Badge` from the wrong package, and `Badge` given `intent="success"`). An earlier version of this entry reported two of three failing from an import check alone; type-checking found the third.
+
+Read these as small samples. Strict is partly circular, since the documented components are what the CLI shows the agent, so valid and type-checking are the fairer measures. Items within a run are correlated, so each condition is closer to 3 samples than 15. One model; CLI runs were told to use the CLI; the author wrote the tasks and expected answers, recorded before any run.
+
+Decisions: neither `components --about` nor the components-first guidance is merged. The measured value of the CLI is in grounding choices and imports in the design system's documented components, not in `find`'s ranking alone.

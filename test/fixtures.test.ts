@@ -25,20 +25,15 @@ describe('primer fixtures', () => {
 });
 
 describe('wordpress fixtures', () => {
-  it('contains the compound-component entries of the Gutenberg manifest', () => {
+  it('contains the full Gutenberg Storybook manifest', () => {
     const manifest = read('wordpress/storybook/manifests/components.json');
     expect(typeof manifest.v).toBe('number');
-    expect(
-      Object.values(manifest.components).map(
-        (entry: unknown) => (entry as { name: string }).name,
-      ),
-    ).toEqual([
-      'Tabs.Root',
-      'Card.Root',
-      'ToggleControl',
-      'DataViewsPicker',
-      'Button',
-      'Modal',
-    ]);
+    expect(Object.keys(manifest.components)).toHaveLength(75);
+    expect(Object.keys(manifest.components)).toEqual(
+      expect.arrayContaining([
+        'design-system-components-tabs',
+        'components-togglecontrol',
+      ]),
+    );
   });
 });

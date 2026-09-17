@@ -5,3 +5,4 @@ test/fixtures/
 docs/superpowers/
 .superpowers/
 .claude/
+eval/experiments/*/**/outputs/

@@ -362,7 +362,7 @@ describe('loadStorybook', () => {
         new URL('../fixtures/wordpress/storybook', import.meta.url),
       ),
     );
-    expect(fragment.components).toHaveLength(6);
+    expect(fragment.components).toHaveLength(75);
     expect(fragment.components.every(c => c.isComponent)).toBe(true);
     expect(
       fragment.components.find(c => c.key === 'design-system-components-tabs'),

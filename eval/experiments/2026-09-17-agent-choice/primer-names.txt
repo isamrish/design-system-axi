@@ -1,0 +1,96 @@
+$ design-system-axi components
+total: 74
+components[74]{name,status,from}:
+  ActionBar,alpha,@primer/react
+  ActionList,beta,@primer/react
+  ActionMenu,beta,@primer/react
+  AnchoredOverlay,alpha,@primer/react
+  Announce,unknown,@primer/react
+  AriaAlert,alpha,@primer/react
+  AriaStatus,alpha,@primer/react
+  Autocomplete,alpha,@primer/react
+  Avatar,alpha,@primer/react
+  AvatarStack,alpha,@primer/react
+  Banner,alpha,@primer/react
+  Blankslate,draft,@primer/react/experimental
+  BranchName,alpha,@primer/react
+  Breadcrumbs,alpha,@primer/react
+  Button,alpha,@primer/react
+  ButtonGroup,alpha,@primer/react
+  Card,draft,@primer/react/experimental
+  Checkbox,alpha,@primer/react
+  CheckboxGroup,alpha,@primer/react
+  ConfirmationDialog,alpha,@primer/react
+  CounterLabel,alpha,@primer/react
+  DataTable,alpha,@primer/react/experimental
+  Details,alpha,@primer/react
+  Dialog,alpha,@primer/react
+  FeatureFlags,draft,@primer/react/experimental
+  FilteredActionList,unknown,@primer/react
+  FormControl,alpha,@primer/react
+  Header,alpha,@primer/react
+  Heading,alpha,@primer/react
+  Hidden,draft,@primer/react/experimental
+  IconButton,alpha,@primer/react
+  InlineMessage,alpha,@primer/react/experimental
+  IssueLabel,alpha,@primer/react/experimental
+  KeybindingHint,draft,@primer/react
+  Label,alpha,@primer/react
+  LabelGroup,alpha,@primer/react
+  Link,alpha,@primer/react
+  LinkButton,unknown,@primer/react
+  NavList,alpha,@primer/react
+  Overlay,alpha,@primer/react
+  PageHeader,beta,@primer/react
+  PageLayout,alpha,@primer/react
+  Pagination,alpha,@primer/react
+  Popover,alpha,@primer/react
+  Portal,alpha,@primer/react
+  ProgressBar,alpha,@primer/react
+  Radio,alpha,@primer/react
+  RadioGroup,alpha,@primer/react
+  RelativeTime,alpha,@primer/react
+  ScrollableRegion,unknown,@primer/react
+  SegmentedControl,alpha,@primer/react
+  Select,alpha,@primer/react
+  SelectPanel,alpha,@primer/react
+  SkeletonAvatar,alpha,@primer/react/experimental
+  SkeletonBox,alpha,@primer/react
+  SkeletonText,alpha,@primer/react/experimental
+  Spinner,alpha,@primer/react
+  SplitPageLayout,alpha,@primer/react
+  Stack,alpha,@primer/react
+  StateLabel,alpha,@primer/react
+  SubNav,alpha,@primer/react
+  Tabs,unknown,@primer/react
+  Text,alpha,@primer/react
+  TextInput,alpha,@primer/react
+  Textarea,alpha,@primer/react
+  Timeline,alpha,@primer/react
+  ToggleSwitch,alpha,@primer/react
+  Token,alpha,@primer/react
+  Tooltip,beta,@primer/react/next
+  TopicTag,draft,@primer/react/experimental
+  TreeView,beta,@primer/react
+  Truncate,alpha,@primer/react
+  UnderlineNav,beta,@primer/react
+  UnderlinePanels,draft,@primer/react/experimental
+excluded: 12 deprecated (use --status deprecated)
+help[2]: "Run `design-system-axi component <Name>` for props, import, and an example","Run `design-system-axi find \"<what you are building>\"` to rank components by purpose"
+
+$ design-system-axi components --status deprecated
+total: 12
+components[12]{name,status,from}:
+  CircleBadge,deprecated,@primer/react
+  Dialog,deprecated,@primer/react/deprecated
+  FilteredSearch,deprecated,@primer/react/deprecated
+  Flash,deprecated,@primer/react/deprecated
+  Octicon,deprecated,@primer/react/deprecated
+  Pagehead,deprecated,@primer/react/deprecated
+  SelectPanel,deprecated,@primer/react/experimental
+  TabNav,deprecated,@primer/react/deprecated
+  TextInputWithTokens,deprecated,@primer/react
+  ThemeProvider,deprecated,@primer/react
+  Tooltip,deprecated,@primer/react/deprecated
+  UnderlineNav,deprecated,@primer/react/deprecated
+help[2]: "Run `design-system-axi component <Name>` for props, import, and an example","Run `design-system-axi find \"<what you are building>\"` to rank components by purpose"
