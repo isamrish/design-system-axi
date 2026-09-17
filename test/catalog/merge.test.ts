@@ -83,7 +83,7 @@ describe('mergeFragments', () => {
       ]),
     ]);
     expect(result).toEqual({
-      skipped: 0,
+      skipped: [],
       components: [
         {
           id: 'button',
@@ -155,7 +155,7 @@ describe('mergeFragments', () => {
         }),
       ]),
     ]);
-    expect(result.skipped).toBe(1);
+    expect(result.skipped).toEqual(['hooks-usefocus']);
     expect(result.components).toHaveLength(1);
     expect(result.components[0]).toMatchObject({
       id: 'components-linkbutton',
@@ -286,7 +286,16 @@ describe('mergeFragments on real Primer data', () => {
     ]);
     const { components, skipped } = mergeFragments([sb, pr]);
     expect(components).toHaveLength(86);
-    expect(skipped).toBe(8);
+    expect(skipped).toEqual([
+      'components-skeleton-examples',
+      'experimental-components-csscomponent',
+      'hooks-useanchoredposition',
+      'hooks-usefocustrap',
+      'hooks-usefocuszone',
+      'hooks-useformcontrolforwardedprops',
+      'hooks-userovingtabindex',
+      'octicons-customization',
+    ]);
     expect(computeAggregates(components).byStatus).toEqual({
       stable: 0,
       beta: 6,

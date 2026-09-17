@@ -29,7 +29,11 @@ const FLAGS = {
   storybook: { type: 'string' },
   primer: { type: 'string' },
   catalog: { type: 'string' },
+  full: { type: 'boolean' },
 } as const;
+
+/** Skipped keys listed before `--full` is needed to see the rest. */
+const SKIPPED_LIMIT = 5;
 
 export async function syncCommand(
   args: string[],
@@ -69,7 +73,7 @@ export async function syncCommand(
         : displayPath(ctx.cwd, fragment.location),
       entries: fragment.components.length,
     })),
-    skippedEntries: skipped,
+    skippedEntries: skipped.length,
     components,
     aggregates: computeAggregates(components),
   };
@@ -94,7 +98,8 @@ export async function syncCommand(
     design_system: `${ds.name} ${ds.package} ${ds.version}`,
     sources: catalog.sources,
     components: components.length,
-    skipped_entries: skipped,
+    skipped_entries: skipped.length,
+    ...describeSkipped(skipped, flags.full === true),
     changes: catalogWasUnreadable
       ? 'replaced unreadable catalog'
       : describeChanges(previous, catalog),
@@ -102,6 +107,19 @@ export async function syncCommand(
       `Run \`${BIN}\` for an overview`,
       `Run \`${BIN} find "<what you are building>"\` to pick components`,
     ],
+  };
+}
+
+/** Names what sync dropped, so a silently unreadable entry is visible. */
+function describeSkipped(
+  skipped: string[],
+  full: boolean,
+): Record<string, unknown> {
+  if (skipped.length === 0) return {};
+  if (full || skipped.length <= SKIPPED_LIMIT) return { skipped };
+  return {
+    skipped: skipped.slice(0, SKIPPED_LIMIT),
+    skipped_shown: `${SKIPPED_LIMIT} of ${skipped.length} (use --full)`,
   };
 }
 

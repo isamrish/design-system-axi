@@ -7,7 +7,7 @@ commands:
   components          list components [--status <s>] [--limit <n>]
   component <Name>    props, import, and an example [--id] [--full]
   find "<intent>"     rank components for what you are building [--limit <n>]
-  sync                build the local catalog [--storybook <url|dir>] [--primer <dir>] [--catalog <path>]
+  sync                build the local catalog [--storybook <url|dir>] [--primer <dir>] [--catalog <path>] [--full]
   setup hooks         start agent sessions with design system context [--user]
 `;
 
@@ -31,13 +31,15 @@ match: strong when a word from the intent appears in the component name, a subco
 flags:
   --limit <n>    maximum matches (default 5)
 `,
-  sync: `usage: design-system-axi sync [--storybook <url|dir>] [--primer <dir>] [--catalog <path>]
+  sync: `usage: design-system-axi sync [--storybook <url|dir>] [--primer <dir>] [--catalog <path>] [--full]
 Reads sources and writes the catalog to .design-system-axi/catalog.json.
 Sources come from flags, then DESIGN_SYSTEM_AXI_STORYBOOK / DESIGN_SYSTEM_AXI_PRIMER, then design-system.axi.json.
 flags:
   --storybook <url|dir>   Storybook URL or built Storybook directory (needs features.componentsManifest)
   --primer <dir>          directory with generated/components.json, e.g. node_modules/@primer/react
   --catalog <path>        catalog output path
+  --full                  name every skipped entry instead of the first 5
+Entries that are not components, such as hooks and story groups that join nothing, are reported by adapter key under skipped.
 `,
   setup: `usage: design-system-axi setup hooks [--user]
 Installs a session-start hook that runs design-system-axi, so agents start with the design system context.

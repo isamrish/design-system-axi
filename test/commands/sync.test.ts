@@ -81,6 +81,53 @@ describe('syncCommand', () => {
     ).toBe('none');
   });
 
+  it('names the entries it skipped, capped with a size hint', async () => {
+    const skippable = (key: string) => ({
+      key,
+      name: key,
+      isComponent: false,
+      storyIds: [`${key}--default`],
+    });
+    const many = {
+      ...loaders,
+      storybook: async () => ({
+        adapter: 'storybook' as const,
+        location: 'https://sb.example',
+        priority: 1,
+        distinctEntries: false,
+        components: [
+          'hooks-a',
+          'hooks-b',
+          'hooks-c',
+          'hooks-d',
+          'hooks-e',
+          'hooks-f',
+        ].map(skippable),
+      }),
+    };
+    const output = await syncCommand(
+      ['--storybook', 'https://sb.example'],
+      { cwd: tmpDir(), env: {}, now },
+      many,
+    );
+    expect(output).toMatchObject({
+      skipped_entries: 6,
+      skipped: ['hooks-a', 'hooks-b', 'hooks-c', 'hooks-d', 'hooks-e'],
+      skipped_shown: '5 of 6 (use --full)',
+    });
+  });
+
+  it('lists every skipped entry with --full', async () => {
+    const output = await syncCommand(
+      ['--primer', '/pkg', '--full'],
+      { cwd: tmpDir(), env: {}, now },
+      loaders,
+    );
+    expect(output.skipped_entries).toBe(0);
+    expect(output).not.toHaveProperty('skipped');
+    expect(output).not.toHaveProperty('skipped_shown');
+  });
+
   it('replaces an unreadable catalog', async () => {
     const cwd = tmpDir();
     const catalogDir = join(cwd, '.design-system-axi');
