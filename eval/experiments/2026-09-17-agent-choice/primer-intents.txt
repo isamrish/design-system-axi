@@ -1,0 +1,20 @@
+r3-01: removable pill for a selected filter
+r3-02: row of labels that collapses the extra ones into a count
+r3-03: round badge showing an app logo
+r3-04: list of selectable items with leading icons
+r3-05: global top bar with the site logo and account menu
+r3-06: secondary navigation links for filtering a page
+r3-07: render a floating layer outside the parent DOM node
+r3-08: wrap an input with its label, caption, and validation text
+r3-09: paragraph text in a muted color
+r3-10: bordered container for a group of related content
+r3-11: announce a status change to screen readers
+r3-12: scrollable area that keyboard users can focus
+r3-13: several related buttons joined together
+r3-14: square button with only an icon and an accessible label
+r3-15: anchor element styled like a button
+r3-16: filterable list with a search box above it
+r3-17: content panels switched by underlined tabs
+r3-18: floating surface positioned next to the element that opened it
+r3-19: legacy page heading with title and actions
+r3-20: horizontal tab links for switching between pages

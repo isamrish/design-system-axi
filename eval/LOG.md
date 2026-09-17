@@ -160,3 +160,20 @@ Top match strength: 10 hits strong, 2 hits weak (g09, g16); 6 misses strong, 2 m
 This is the first measurement of `find` outside Primer. 60% against Primer's clean held-out 55% says the keyword ranking was not quietly fitted to Primer's vocabulary; with 20 tasks per set the two are indistinguishable, so read it as "about the same", not "better". The author had seen Gutenberg's component list (see the registration note), which if anything favours this number.
 
 The misses have the same cause as Primer's: paraphrase. "slider" never reaches RangeControl, "brief popup" never reaches Snackbar, "no results" never reaches EmptyState, "visibility" never reaches RadioControl. Two further patterns showed in the `why` evidence: synonym expansions written for Primer misfire here ("page" → "pagination" pulls in DataViews; "title" → "layout" pulls in InputLayout), and domain words that recur across Gutenberg descriptions ("post", "search") lift large multipurpose components such as DataViews and Snackbar. `weak` flagged 2 of 8 misses, less than on Primer. None of this justifies a ranking, tokenizer, or synonym change without registering a new set first.
+
+## 2026-09-17 — Agent choice from the components listing (outside CI)
+
+Question: does an agent choose components better from a listing than `find` ranks them, and does a one-line summary per component (`components --about`, built on an unmerged branch) help? Measured once on registrations 3 (Primer) and 4 (Gutenberg); inputs, prompt, raw answers, and scorer are in [`experiments/2026-09-17-agent-choice/`](experiments/2026-09-17-agent-choice/).
+
+Method: four arms, each a separate Claude Sonnet agent with no tools, given only a pasted listing and the registration's 20 intents, asked for up to three component names per intent. Names-only arms got `components` output; summary arms got `components --about` output. Primer listings append the deprecated listing, because three registration 3 golden components are deprecated. A name counts only if it is in the arm's listing; no agent named one that was not.
+
+|                            | `find` top 3 | agent, names only: top 3 / first pick | agent, with summaries: top 3 / first pick |
+| -------------------------- | ------------ | ------------------------------------- | ----------------------------------------- |
+| Primer (registration 3)    | 11/20        | 20/20 / 19/20                         | 20/20 / 19/20                             |
+| Gutenberg (registration 4) | 12/20        | 20/20 / 20/20                         | 20/20 / 18/20                             |
+
+Findings: an agent choosing from the plain listing found a correct component for all 40 tasks, against 23 for `find`. Summaries added nothing measurable: both arms hit the top-3 ceiling, and Gutenberg's first picks were two lower with them (g04 went to UnitControl, whose summary is cut at "(e.g."; g19 to ToggleGroupControl), which is noise at this size but no evidence of benefit for about 1.3-1.5k extra tokens.
+
+Confounds: both design systems use descriptive component names; the model has likely seen Primer and WordPress in training; one run per arm; the author wrote both registrations; both catalogs list 100 or fewer current components, so the whole listing fits in one default `components` call, and nothing here says how agents do with a truncated or much longer listing.
+
+Decisions: agent guidance leads with `components` when the current components fit in one default listing, and keeps `find` as a keyword shortlist (and the lead for larger catalogs). `components --about` is not merged. `find`'s ranking is unchanged, and registrations 1-4 keep their numbers.

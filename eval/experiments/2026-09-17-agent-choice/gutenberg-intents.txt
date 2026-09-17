@@ -1,0 +1,20 @@
+g01: on/off switch to enable comments on a post
+g02: text field for the site title on a settings page
+g03: multi-line field for writing a post excerpt
+g04: number input for how many posts to show per page
+g05: slider to set the border radius of an image
+g06: enter several keywords as removable chips
+g07: area where users can drop files to upload them
+g08: button that opens the file chooser to import a CSV
+g09: dismissible success message after saving settings
+g10: brief popup at the bottom saying the draft was saved
+g11: collapsible section inside the settings sidebar
+g12: align text left, center or right with a row of buttons
+g13: pick the date a post should be published
+g14: table of posts that can be sorted and filtered
+g15: structured form for editing a record's fields
+g16: hint that appears when hovering an icon-only button
+g17: message shown when a search returns no results
+g18: checkbox to agree to the terms of service
+g19: set post visibility to public, private or password protected
+g20: menu of more actions behind a three-dots button

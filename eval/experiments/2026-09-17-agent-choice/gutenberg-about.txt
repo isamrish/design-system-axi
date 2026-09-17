@@ -1,0 +1,79 @@
+$ design-system-axi components --about
+total: 74
+components[74]{name,status,from,about}:
+  Autocomplete,unknown,@wordpress/ui,Low-level primitive for an autocomplete input that suggests options as you type.
+  Badge,unknown,@wordpress/ui,A badge component for displaying labels with semantic intent.
+  BaseControl,unknown,@wordpress/components,`BaseControl` is a low-level component used to generate labels and help text for components handlin…
+  Button,unknown,@wordpress/components,Lets users take actions and make choices with a single click or tap.
+  Calendar,unknown,@wordpress/ui,`Calendar` provides a customizable calendar interface for **single date** selection.
+  Card,unknown,@wordpress/ui,A visually contained surface that groups related content and actions.
+  CheckboxControl,unknown,@wordpress/components,Checkboxes allow the user to select one or more items from a set.
+  Collapsible,unknown,@wordpress/ui,Groups all parts of the collapsible.
+  CollapsibleCard,unknown,@wordpress/ui,A card that can be expanded and collapsed.
+  ColorIndicator,unknown,@wordpress/components,ColorIndicator is a React component that renders a specific color in a circle.
+  ColorPalette,unknown,@wordpress/components,Allows the user to pick a color from a list of pre-defined color entries.
+  ColorPicker,unknown,@wordpress/components,"`ColorPicker` lets users select a color from a visual color surface, or by editing its hex, RGB, or…"
+  ComboboxControl,unknown,@wordpress/components,`ComboboxControl` is an enhanced version of a `SelectControl` with the addition of being able to se…
+  Composite,unknown,@wordpress/components,"Renders a widget based on the WAI-ARIA `composite` role, which provides a single tab stop on the pa…"
+  ConfirmDialog,unknown,@wordpress/components,"`ConfirmDialog` is built on top of `Modal` and displays a confirmation dialog, with _confirm_ and _…"
+  CustomSelectControl,unknown,@wordpress/components,"`CustomSelectControl` is a dropdown for selecting a single option from a list, with support for cus…"
+  DataForm,unknown,@wordpress/dataviews,"`DataForm` renders an auto-generated form for viewing and editing the fields of a data item, driven…"
+  DataViews,unknown,@wordpress/dataviews,"`DataViews` renders a dataset using configurable layouts (table, grid, list) with built-in search, …"
+  DataViewsPicker,unknown,@wordpress/dataviews,`DataViewsPicker` renders a dataset allowing users to select one or multiple items.
+  Disabled,unknown,@wordpress/components,`Disabled` is a component which disables descendant tabbable elements and prevents pointer interact…
+  DropZone,unknown,@wordpress/components,`DropZone` is a component creating a drop zone area taking the full size of its parent element.
+  Dropdown,unknown,@wordpress/components,Renders a button that opens a floating content modal when clicked.
+  EmptyState,unknown,@wordpress/ui,The root container for an empty state component.
+  Field,unknown,@wordpress/ui,A low-level component that associates an accessible label and description with a single form contro…
+  Fieldset,unknown,@wordpress/ui,A low-level component that associates an accessible legend and description with a group of multiple…
+  FormFileUpload,unknown,@wordpress/components,FormFileUpload allows users to select files from their local device.
+  FormToggle,unknown,@wordpress/components,FormToggle switches a single setting on or off.
+  FormTokenField,unknown,@wordpress/components,A `FormTokenField` is a field similar to the tags and categories fields in the interim editor chrom…
+  GradientPicker,unknown,@wordpress/components,GradientPicker is a React component that renders a color gradient picker to define a multi step gra…
+  Icon,unknown,@wordpress/ui,Renders an SVG icon with a 24px default size.
+  Input,unknown,@wordpress/ui,A low-level primitive for an input field.
+  InputControl,unknown,@wordpress/ui,A complete input field with integrated label and description.
+  InputLayout,unknown,@wordpress/ui,"A low-level component that handles the visual layout of an input-like field, including disabled sta…"
+  ItemGroup,unknown,@wordpress/components,`ItemGroup` displays a list of `Item`s grouped and styled together.
+  KeyboardShortcuts,unknown,@wordpress/components,`KeyboardShortcuts` is a component which handles keyboard sequences during the lifetime of the rend…
+  Link,unknown,@wordpress/ui,A styled anchor element with support for semantic color tones and an unstyled escape hatch.
+  MenuGroup,unknown,@wordpress/components,`MenuGroup` wraps a series of related `MenuItem` components into a common section.
+  MenuItem,unknown,@wordpress/components,MenuItem is a component which renders a button intended to be used in combination with the `Dropdow…
+  MenuItemsChoice,unknown,@wordpress/components,"`MenuItemsChoice` functions similarly to a set of `MenuItem`s, but allows the user to select one op…"
+  Modal,unknown,@wordpress/components,Modals give users information and choices related to a task they’re trying to accomplish.
+  Navigator,unknown,@wordpress/components,The `Navigator` component allows rendering nested views/panels/menus (via the `Navigator.Screen` co…
+  Notice,unknown,@wordpress/components,`Notice` is a component used to communicate feedback to the user.
+  Popover,unknown,@wordpress/components,`Popover` renders its content in a floating modal.
+  ProgressBar,unknown,@wordpress/components,A simple horizontal progress bar component.
+  RadioControl,unknown,@wordpress/components,Render a user interface to select the user type using radio inputs.
+  RangeCalendar,unknown,@wordpress/ui,`RangeCalendar` provides a customizable calendar interface for **date range** selection.
+  RangeControl,unknown,@wordpress/components,RangeControls are used to make selections from a range of incremental values.
+  ResizableBox,unknown,@wordpress/components,"`ResizableBox` wraps content in a container with draggable handles, letting users interactively res…"
+  SandBox,unknown,@wordpress/components,This component provides an isolated environment for arbitrary HTML via iframes.
+  ScrollLock,unknown,@wordpress/components,ScrollLock is a content-free React component for declaratively preventing scroll bleed from modal U…
+  SearchControl,unknown,@wordpress/components,SearchControl components let users display a search control.
+  SearchableChipSelect,unknown,@wordpress/ui,"A low-level primitive for a searchable multi-selection field with chips, with support for a creatab…"
+  SearchableChipSelectControl,unknown,@wordpress/ui,"A complete searchable multi-select field with chips, integrated label, and description."
+  SelectControl,unknown,@wordpress/components,`SelectControl` allows users to select from a single or multiple option menu.
+  Shortcut,unknown,@wordpress/components,"Shortcut component is used to display keyboard shortcuts, and it can be customized with a custom di…"
+  Skeleton,unknown,@wordpress/ui,A placeholder shown while content is loading.
+  Slot,unknown,@wordpress/components,`Slot` marks a location where content rendered by matching `Fill` components elsewhere will appear.
+  Snackbar,unknown,@wordpress/components,A Snackbar displays a succinct message that is cleared out after a small delay.
+  Spinner,unknown,@wordpress/ui,A component used to notify users that their action is being processed.
+  Stack,unknown,@wordpress/ui,A flexible layout component using CSS Flexbox for consistent spacing and alignment.
+  Tabs,unknown,@wordpress/ui,Groups the tabs and the corresponding panels.
+  Text,unknown,@wordpress/ui,A text component for rendering content with predefined typographic variants.
+  TextHighlight,unknown,@wordpress/components,Highlights occurrences of a given string within another string of text.
+  Textarea,unknown,@wordpress/ui,A low-level primitive for a textarea field.
+  TextareaControl,unknown,@wordpress/ui,A complete textarea field with integrated label and description.
+  ToggleControl,unknown,@wordpress/components,ToggleControl is used to generate a toggle user interface.
+  ToggleGroupControl,unknown,@wordpress/components,`ToggleGroupControl` is a form component that lets users choose options represented in horizontal s…
+  Tooltip,unknown,@wordpress/ui,"`Tooltip` is used to visually show the label of an icon button, or other such interactive controls …"
+  TreeGrid,unknown,@wordpress/components,`TreeGrid` is used to create a tree hierarchy.
+  TreeSelect,unknown,@wordpress/components,Generates a hierarchical select input.
+  Truncate,unknown,@wordpress/components,`Truncate` is a typography primitive that trims text content.
+  UnitControl,unknown,@wordpress/components,`UnitControl` allows the user to set a numeric quantity as well as a unit (e.g.
+  ValidityIndicator,unknown,@wordpress/ui,"Displays a validity message for a form control, with an icon matching the validity state: invalid, …"
+  VisuallyHidden,unknown,@wordpress/ui,Visually hides content while keeping it accessible to screen readers.
+about_note: "first sentence of each description, or story names marked \"stories:\" when a component has none"
+help[2]: "Run `design-system-axi component <Name>` for props, import, and an example","Run `design-system-axi find \"<what you are building>\"` to rank components by purpose"
