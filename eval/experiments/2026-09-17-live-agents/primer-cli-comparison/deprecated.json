@@ -1,0 +1,53 @@
+{
+  "source": "catalog synced 2026-09-17 from https://primer.style/react/storybook and @primer/react 38.39.0",
+  "deprecated": [
+    {
+      "name": "CircleBadge",
+      "import": "@primer/react"
+    },
+    {
+      "name": "Dialog",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "FilteredSearch",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "Flash",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "Octicon",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "Pagehead",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "SelectPanel",
+      "import": "@primer/react/experimental"
+    },
+    {
+      "name": "TabNav",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "TextInputWithTokens",
+      "import": "@primer/react"
+    },
+    {
+      "name": "ThemeProvider",
+      "import": "@primer/react"
+    },
+    {
+      "name": "Tooltip",
+      "import": "@primer/react/deprecated"
+    },
+    {
+      "name": "UnderlineNav",
+      "import": "@primer/react/deprecated"
+    }
+  ]
+}

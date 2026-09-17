@@ -1,0 +1,8 @@
+# tsc --noEmit -p . run in each app directory after the agent finished (app's own tsconfig, TypeScript 7,
+# @primer/react 38.39.0 installed).
+d1 tsc=pass
+d2 tsc=pass
+d3 tsc=pass
+e1 tsc=pass
+e2 tsc=pass
+e3 tsc=pass
