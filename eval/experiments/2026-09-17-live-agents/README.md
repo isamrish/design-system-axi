@@ -28,9 +28,10 @@ an inline validity message under the key field.
 | b1-b3 | released 0.1.6  | same                                    | no                                                           | "Run find before writing UI" |
 | c1-c3 | none            | none                                    | no                                                           | none                         |
 | d1-d3 | none            | none                                    | yes (`@wordpress/ui` 0.22.0, `@wordpress/components` 40.1.0) | none                         |
+| e1-e3 | released 0.1.6  | same as a/b                             | yes, as d1-d3                                                | "Run find before writing UI" |
 
 CLI runs were told to use the CLI via `npx design-system-axi <args>`; runs without it were given the same task
-with that sentence and the hook context removed. No condition could type-check, so `score.ts` scores imports:
+with that sentence and the hook context removed. e1-e3 were added after the other runs to separate the CLI from package availability: they are d1-d3 plus the CLI, catalog, and hook. Agents were not asked to type-check; afterwards every output was type-checked against the installed packages in one shared project (`typecheck.txt`). `score.ts` scores imports:
 **strict** counts the design system's current documented component per item, **valid** any component the
 published packages export (`published-exports.json`) that serves the item, imported from the package that
 exports it; it also lists imported names the packages do not export.

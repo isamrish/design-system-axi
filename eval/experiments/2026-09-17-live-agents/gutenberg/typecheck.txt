@@ -1,0 +1,10 @@
+# tsc --noEmit (TypeScript 5.9.3, strict, skipLibCheck) over outputs/*.tsx, with @wordpress/ui 0.22.0,
+# @wordpress/components 40.1.0, @types/react 18 installed. Files not listed had no errors.
+outputs/c1.tsx(7,2): error TS2305: Module '"@wordpress/components"' has no exported member 'Heading'.
+outputs/c1.tsx(8,2): error TS2305: Module '"@wordpress/components"' has no exported member 'HStack'.
+outputs/c1.tsx(9,2): error TS2305: Module '"@wordpress/components"' has no exported member 'VStack'.
+outputs/c1.tsx(65,12): error TS2322: Type '"success" | "error"' is not assignable to type '"stable" | "low" | "high" | "medium" | "informational" | "draft" | "none" | undefined'.
+  Type '"success"' is not assignable to type '"stable" | "low" | "high" | "medium" | "informational" | "draft" | "none" | undefined'.
+outputs/c2.tsx(75,14): error TS2322: Type '"success" | "error"' is not assignable to type '"stable" | "low" | "high" | "medium" | "informational" | "draft" | "none" | undefined'.
+  Type '"success"' is not assignable to type '"stable" | "low" | "high" | "medium" | "informational" | "draft" | "none" | undefined'.
+outputs/c3.tsx(3,2): error TS2305: Module '"@wordpress/components"' has no exported member 'Badge'.

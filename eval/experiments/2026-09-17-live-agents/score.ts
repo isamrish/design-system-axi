@@ -36,7 +36,18 @@ const runs = [
   'd1',
   'd2',
   'd3',
+  'e1',
+  'e2',
+  'e3',
 ];
+
+// Type-check results recorded against the installed packages (typecheck.txt).
+const typeErrors = new Map<string, number>();
+for (const [, run = ''] of readFileSync(
+  here('gutenberg/typecheck.txt'),
+  'utf8',
+).matchAll(/^outputs\/(\w+)\.tsx\(\d+,\d+\): error/gm))
+  typeErrors.set(run, (typeErrors.get(run) ?? 0) + 1);
 
 for (const run of runs) {
   const source = readFileSync(here(`gutenberg/outputs/${run}.tsx`), 'utf8');
@@ -63,6 +74,6 @@ for (const run of runs) {
     .filter(name => !exists(name))
     .map(name => `${name} from ${imports.get(name)}`);
   console.log(
-    `${run}: strict ${strict}/5, valid ${valid}/5, not exported: ${missing.join(', ') || 'none'}`,
+    `${run}: strict ${strict}/5, valid ${valid}/5, type errors ${typeErrors.get(run) ?? 0}, not exported: ${missing.join(', ') || 'none'}`,
   );
 }

@@ -14,3 +14,7 @@ Added before the no-CLI runs (2 conditions, 3 runs each: C = memory only, no pac
   @wordpress/dataviews latest), imported from the package that exports it, that serves the item. Published packages also export
   ValidatedInputControl (@wordpress/ui), which counts for items 3 and 5, and classic TextControl, PanelBody, Placeholder
   (@wordpress/components), which count as valid but not strict.
+
+Added before the CLI-plus-packages runs (E = packages installed as in D, plus released 0.1.6 CLI, catalog, and hook; 3 runs):
+same strict and valid rules. After all runs, every output (a1-e3) is type-checked against the installed packages
+(@wordpress/ui 0.22.0, @wordpress/components 40.1.0) in one shared checker; a file passes if tsc reports no errors in it.
