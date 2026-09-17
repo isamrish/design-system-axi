@@ -91,7 +91,7 @@ It is generated from `src/skill.ts`; update it with `pnpm run build:skill` and v
 - **Sources are read, never written** - Storybook ≥ 10 with `features: { componentsManifest: true }` (a URL or a `storybook build` directory) supplies components, stories, snippets, and descriptions; a directory with `generated/components.json` (shipped in `@primer/react`) supplies curated status, import paths, props, and subcomponents.
 - **Merged by story id** - sources are joined on Storybook story ids; the design system's own metadata wins where both report a field, and the catalog records which source supplied each field.
 - **Version aware** - the home view compares the catalog's design-system version with the version installed in your app.
-- **`find` is a shortlist, not an oracle** - it is keyword-based: it finds components whose names or descriptions share your words and misses paraphrases. On held-out tasks against Primer React it puts a correct component in the top 3 about half the time (55% on the latest clean set; see [`eval/LOG.md`](eval/LOG.md)). Treat `weak` matches with suspicion and confirm with `component <Name>`.
+- **`find` is a shortlist, not an oracle** - it is keyword-based: it finds components whose names or descriptions share your words and misses paraphrases. On held-out tasks it puts a correct component in the top 3 a little over half the time: 55% against Primer React and 60% against WordPress Gutenberg's Storybook (20 tasks each; see [`eval/LOG.md`](eval/LOG.md)). Treat `weak` matches with suspicion and confirm with `component <Name>`.
 
 ## CLI Reference
 

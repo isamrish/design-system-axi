@@ -150,3 +150,13 @@ Summary of `find` quality on 2026-09-14: in-sample registration 1 90%; registrat
 Before → after: registration 1 18/20 (90%) → **17/20 (85%)**; registration 2 9/20 (45%) → 9/20 (45%); registration 3 11/20 (55%) → 11/20 (55%).
 
 The one flip is t11 ("pick several labels from a searchable list", golden SelectPanel). SelectPanel's own entry is unchanged; collection statistics shifted when the misattached stories left, its score went 0.730 → 0.720, tying NavList, and it lost the name tie-break to fourth. It was already a `weak` match holding third by 0.01. No synonym or weight was changed to recover it. Registration 1 now sits exactly on the 85% gate.
+
+## 2026-09-17 — Registration 4 (WordPress Gutenberg) result (measured once)
+
+retrieval_top3: **12/20 (60%)** · avg_tokens_per_task 437 · raw_manifest_tokens 555461 · design system `wordpress-gutenberg-storybook@2026-09-16` (Storybook manifest only, no curated metadata).
+Misses: g02 InputControl, g03 TextareaControl, g04 InputControl, g05 RangeControl, g10 Snackbar, g12 ToggleGroupControl, g17 EmptyState, g19 RadioControl.
+Top match strength: 10 hits strong, 2 hits weak (g09, g16); 6 misses strong, 2 misses weak (g02, g04).
+
+This is the first measurement of `find` outside Primer. 60% against Primer's clean held-out 55% says the keyword ranking was not quietly fitted to Primer's vocabulary; with 20 tasks per set the two are indistinguishable, so read it as "about the same", not "better". The author had seen Gutenberg's component list (see the registration note), which if anything favours this number.
+
+The misses have the same cause as Primer's: paraphrase. "slider" never reaches RangeControl, "brief popup" never reaches Snackbar, "no results" never reaches EmptyState, "visibility" never reaches RadioControl. Two further patterns showed in the `why` evidence: synonym expansions written for Primer misfire here ("page" → "pagination" pulls in DataViews; "title" → "layout" pulls in InputLayout), and domain words that recur across Gutenberg descriptions ("post", "search") lift large multipurpose components such as DataViews and Snackbar. `weak` flagged 2 of 8 misses, less than on Primer. None of this justifies a ranking, tokenizer, or synonym change without registering a new set first.
