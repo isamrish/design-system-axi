@@ -1,0 +1,112 @@
+{
+  "registration": 4,
+  "registered": "2026-09-17",
+  "designSystem": "wordpress-gutenberg-storybook@2026-09-16",
+  "note": "Held-out set for a second design system, registered before any find run on these intents. Disclosure: the author had already read Gutenberg's component list and run five ad-hoc find queries on this exact snapshot (pick a color; modal dialog to confirm deletion; dropdown to choose one option; show a loading spinner; tabs to switch between panels); those queries and close paraphrases are excluded. The 20 intents were written from WordPress editor and plugin UI needs before the component list was reopened for labeling, and none were replaced. Golden lists every component that could reasonably serve the intent. Measured once; no ranking, tokenizer, or synonym change may be made on the basis of its results without a new registration.",
+  "tasks": [
+    {
+      "id": "g01",
+      "intent": "on/off switch to enable comments on a post",
+      "golden": ["ToggleControl", "FormToggle"]
+    },
+    {
+      "id": "g02",
+      "intent": "text field for the site title on a settings page",
+      "golden": ["InputControl", "Input"]
+    },
+    {
+      "id": "g03",
+      "intent": "multi-line field for writing a post excerpt",
+      "golden": ["TextareaControl", "Textarea"]
+    },
+    {
+      "id": "g04",
+      "intent": "number input for how many posts to show per page",
+      "golden": ["InputControl", "Input"]
+    },
+    {
+      "id": "g05",
+      "intent": "slider to set the border radius of an image",
+      "golden": ["RangeControl"]
+    },
+    {
+      "id": "g06",
+      "intent": "enter several keywords as removable chips",
+      "golden": [
+        "FormTokenField",
+        "SearchableChipSelectControl",
+        "SearchableChipSelect"
+      ]
+    },
+    {
+      "id": "g07",
+      "intent": "area where users can drop files to upload them",
+      "golden": ["DropZone"]
+    },
+    {
+      "id": "g08",
+      "intent": "button that opens the file chooser to import a CSV",
+      "golden": ["FormFileUpload"]
+    },
+    {
+      "id": "g09",
+      "intent": "dismissible success message after saving settings",
+      "golden": ["Notice", "Snackbar"]
+    },
+    {
+      "id": "g10",
+      "intent": "brief popup at the bottom saying the draft was saved",
+      "golden": ["Snackbar"]
+    },
+    {
+      "id": "g11",
+      "intent": "collapsible section inside the settings sidebar",
+      "golden": ["Collapsible", "CollapsibleCard"]
+    },
+    {
+      "id": "g12",
+      "intent": "align text left, center or right with a row of buttons",
+      "golden": ["ToggleGroupControl"]
+    },
+    {
+      "id": "g13",
+      "intent": "pick the date a post should be published",
+      "golden": ["Calendar"]
+    },
+    {
+      "id": "g14",
+      "intent": "table of posts that can be sorted and filtered",
+      "golden": ["DataViews"]
+    },
+    {
+      "id": "g15",
+      "intent": "structured form for editing a record's fields",
+      "golden": ["DataForm"]
+    },
+    {
+      "id": "g16",
+      "intent": "hint that appears when hovering an icon-only button",
+      "golden": ["Tooltip"]
+    },
+    {
+      "id": "g17",
+      "intent": "message shown when a search returns no results",
+      "golden": ["EmptyState"]
+    },
+    {
+      "id": "g18",
+      "intent": "checkbox to agree to the terms of service",
+      "golden": ["CheckboxControl"]
+    },
+    {
+      "id": "g19",
+      "intent": "set post visibility to public, private or password protected",
+      "golden": ["RadioControl", "SelectControl", "CustomSelectControl"]
+    },
+    {
+      "id": "g20",
+      "intent": "menu of more actions behind a three-dots button",
+      "golden": ["Dropdown", "MenuGroup", "MenuItem"]
+    }
+  ]
+}
