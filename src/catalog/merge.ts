@@ -61,19 +61,36 @@ export function mergeFragments(fragments: SourceFragment[]): MergeResult {
       }
     }
 
-    pending.sort((a, b) => compareStrings(a.key, b.key));
+    // Current entries first, so a deprecated one never founds a group that a
+    // current entry with the same name then joins.
+    pending.sort(
+      (a, b) =>
+        Number(isDeprecated(a)) - Number(isDeprecated(b)) ||
+        compareStrings(a.key, b.key),
+    );
     for (const entry of pending) {
+      // Without a published story id linking them, a deprecated entry (often an
+      // old API that shares its name) must not lend its examples to a current
+      // component, so it joins by prefix or name only a deprecated one.
+      const joinable = (group: Group) =>
+        eligible(group) && (!isDeprecated(entry) || groupDeprecated(group));
       const group =
         (fragment.distinctEntries
           ? undefined
-          : prefixMatch(entry.key, placed)) ??
-        nameMatch(entry.name, groups.filter(eligible));
+          : prefixMatch(entry.key, placed, joinable)) ??
+        nameMatch(entry.name, groups.filter(joinable));
       if (group) {
         attach(group, fragment.adapter, entry);
         placed.set(entry.key, group);
         continue;
       }
-      if (!entry.isComponent) {
+      const shadowsCurrent =
+        isDeprecated(entry) &&
+        groups.some(
+          g =>
+            eligible(g) && !groupDeprecated(g) && groupName(g) === entry.name,
+        );
+      if (!entry.isComponent || shadowsCurrent) {
         skipped.push(entry.key);
         continue;
       }
@@ -117,11 +134,13 @@ function storyMatch(
 function prefixMatch(
   key: string,
   placed: Map<string, Group>,
+  joinable: (group: Group) => boolean,
 ): Group | undefined {
   let bestKey: string | undefined;
-  for (const candidate of placed.keys()) {
+  for (const [candidate, group] of placed) {
     if (
       key.startsWith(`${candidate}-`) &&
+      joinable(group) &&
       (bestKey === undefined || candidate.length > bestKey.length)
     )
       bestKey = candidate;
@@ -130,13 +149,23 @@ function prefixMatch(
 }
 
 function nameMatch(name: string, groups: Group[]): Group | undefined {
-  const same = groups.filter(group => group.members[0]?.entry.name === name);
+  const same = groups.filter(group => groupName(group) === name);
   if (same.length === 1) return same[0];
-  const current = same.filter(
-    group =>
-      group.members.find(m => m.entry.status)?.entry.status !== 'deprecated',
-  );
+  const current = same.filter(group => !groupDeprecated(group));
   return current.length === 1 ? current[0] : undefined;
+}
+
+function isDeprecated(entry: FragmentComponent): boolean {
+  return entry.status === 'deprecated';
+}
+
+function groupName(group: Group): string | undefined {
+  return group.members[0]?.entry.name;
+}
+
+/** A group's status comes from its first member that states one, as in toComponent. */
+function groupDeprecated(group: Group): boolean {
+  return group.members.find(m => m.entry.status)?.entry.status === 'deprecated';
 }
 
 function toComponent(group: Group): Component {

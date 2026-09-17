@@ -81,7 +81,9 @@ export function translateStorybook(
           entry.reactDocgen?.description ??
           ''
         ).trim(),
-        ...(deprecation ? { status: 'deprecated' as const, deprecation } : {}),
+        ...(deprecation !== undefined || inDeprecatedSection(entry.id)
+          ? { status: 'deprecated' as const, deprecation: deprecation ?? '' }
+          : {}),
         props: compound ? [] : props,
         subcomponents: [
           ...(compound ? [{ name: entry.name, props }] : []),
@@ -162,6 +164,14 @@ function toProps(raw: Record<string, unknown> | undefined): Prop[] {
       };
     })
     .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+}
+
+/**
+ * A story filed under a `Deprecated/` sidebar section, whose id therefore
+ * starts with `deprecated-`. The section gives no reason, so none is recorded.
+ */
+function inDeprecatedSection(id: string): boolean {
+  return id.startsWith('deprecated-');
 }
 
 function deprecationNote(

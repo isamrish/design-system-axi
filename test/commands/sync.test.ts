@@ -193,7 +193,7 @@ describe('sync through the CLI', () => {
       'design_system: Primer React @primer/react 38.39.0',
     );
     expect(result.out).toContain('components: 86');
-    expect(result.out).toContain('skipped_entries: 8');
+    expect(result.out).toContain('skipped_entries: 10');
     expect(result.out).toContain('changes: initial sync');
     const catalog = await readCatalog(
       join(cwd, '.design-system-axi', 'catalog.json'),
