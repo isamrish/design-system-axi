@@ -1,25 +1,31 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { loadPrimer } from '../src/adapters/primer/load.js';
-import { loadStorybook } from '../src/adapters/storybook/load.js';
-import { mergeFragments } from '../src/catalog/merge.js';
+import {
+  DESIGN_SYSTEMS,
+  loadCatalogComponents,
+} from '../eval/design-systems.js';
 
 interface Registration {
   registration: number;
+  designSystem: string;
   tasks: { id: string; intent: string; golden: string[] }[];
 }
 
-const registrations = ['tasks.json', 'tasks-2.json', 'tasks-3.json'].map(
-  file =>
-    JSON.parse(
-      readFileSync(new URL(`../eval/${file}`, import.meta.url), 'utf8'),
-    ) as Registration,
-);
+const evalDir = fileURLToPath(new URL('../eval/', import.meta.url));
+const registrations = readdirSync(evalDir)
+  .filter(file => /^tasks(-\d+)?\.json$/.test(file))
+  .map(
+    file =>
+      JSON.parse(readFileSync(`${evalDir}${file}`, 'utf8')) as Registration,
+  )
+  .sort((a, b) => a.registration - b.registration);
 
 describe('eval registrations', () => {
   it('are numbered in order', () => {
-    expect(registrations.map(r => r.registration)).toEqual([1, 2, 3]);
+    expect(registrations.map(r => r.registration)).toEqual(
+      registrations.map((_, index) => index + 1),
+    );
   });
 
   it('each have 20 tasks with golden components and ids unique across registrations', () => {
@@ -34,21 +40,26 @@ describe('eval registrations', () => {
     }
   });
 
-  it('only name components that exist in the Primer catalog', async () => {
-    const [sb, pr] = await Promise.all([
-      loadStorybook(
-        fileURLToPath(new URL('./fixtures/primer/storybook', import.meta.url)),
-      ),
-      loadPrimer(
-        fileURLToPath(new URL('./fixtures/primer/package', import.meta.url)),
-      ),
-    ]);
-    const names = new Set(
-      mergeFragments([sb, pr]).components.map(component => component.name),
-    );
-    const missing = registrations
-      .flatMap(r => r.tasks.flatMap(task => task.golden))
-      .filter(name => !names.has(name));
+  it('each name a design system the runner knows how to sync', () => {
+    for (const registration of registrations)
+      expect(Object.keys(DESIGN_SYSTEMS)).toContain(registration.designSystem);
+  });
+
+  it('only name components that exist in their own design system', async () => {
+    const missing: string[] = [];
+    for (const designSystem of new Set(
+      registrations.map(r => r.designSystem),
+    )) {
+      const names = new Set(
+        (await loadCatalogComponents(designSystem)).map(c => c.name),
+      );
+      for (const registration of registrations)
+        if (registration.designSystem === designSystem)
+          for (const task of registration.tasks)
+            for (const name of task.golden)
+              if (!names.has(name))
+                missing.push(`${task.id} ${designSystem}: ${name}`);
+    }
     expect(missing).toEqual([]);
   });
 });

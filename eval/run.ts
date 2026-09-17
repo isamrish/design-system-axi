@@ -1,14 +1,23 @@
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encode } from '@toon-format/toon';
 import { componentCommand } from '../src/commands/component.js';
+import type { CommandContext } from '../src/commands/context.js';
 import { findCommand } from '../src/commands/find.js';
 import { syncCommand } from '../src/commands/sync.js';
+import { DESIGN_SYSTEMS, syncArgs } from './design-systems.js';
 
 interface Registration {
   registration: number;
+  designSystem: string;
   tasks: { id: string; intent: string; golden: string[] }[];
 }
 
@@ -16,7 +25,6 @@ interface Registration {
 const GATED_REGISTRATION = 1;
 const TARGET = 0.85;
 const root = fileURLToPath(new URL('..', import.meta.url));
-const fixtures = join(root, 'test', 'fixtures', 'primer');
 const estimateTokens = (text: string) => Math.ceil(text.length / 4);
 
 const registrations = readdirSync(join(root, 'eval'))
@@ -29,27 +37,31 @@ const registrations = readdirSync(join(root, 'eval'))
   )
   .sort((a, b) => a.registration - b.registration);
 
-const cwd = mkdtempSync(join(tmpdir(), 'design-system-axi-eval-'));
-const ctx = { cwd, env: {}, now: () => new Date() };
+const tmp = mkdtempSync(join(tmpdir(), 'design-system-axi-eval-'));
+const now = () => new Date();
+
+/** Each design system is synced once into its own directory and scored there. */
+const contexts = new Map<string, CommandContext>();
+async function contextFor(designSystem: string): Promise<CommandContext> {
+  const existing = contexts.get(designSystem);
+  if (existing) return existing;
+  const cwd = join(tmp, String(contexts.size));
+  mkdirSync(cwd);
+  const ctx: CommandContext = { cwd, env: {}, now };
+  await syncCommand(syncArgs(designSystem), ctx);
+  contexts.set(designSystem, ctx);
+  return ctx;
+}
 
 try {
-  await syncCommand(
-    [
-      '--storybook',
-      join(fixtures, 'storybook'),
-      '--primer',
-      join(fixtures, 'package'),
-    ],
-    ctx,
-  );
-
-  const rawManifest = readFileSync(
-    join(fixtures, 'storybook', 'manifests', 'components.json'),
-    'utf8',
-  );
   let gateMet = true;
 
   for (const registration of registrations) {
+    const ctx = await contextFor(registration.designSystem);
+    const storybook = DESIGN_SYSTEMS[registration.designSystem]?.storybook;
+    const rawManifest = storybook
+      ? readFileSync(join(storybook, 'manifests', 'components.json'), 'utf8')
+      : '';
     let hits = 0;
     let tokens = 0;
     const rows: Record<string, unknown>[] = [];
@@ -82,6 +94,7 @@ try {
     console.log(
       encode({
         registration: registration.registration,
+        design_system: registration.designSystem,
         tasks: rows,
         summary: {
           retrieval_top3: `${hits}/${count} (${Math.round(retrieval * 100)}%)`,
@@ -94,5 +107,5 @@ try {
   }
   process.exitCode = gateMet ? 0 : 1;
 } finally {
-  rmSync(cwd, { recursive: true, force: true });
+  rmSync(tmp, { recursive: true, force: true });
 }
